@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.dao.MenuDAO">
+    <insert id="addMenu" parameterType="com.erp.dao.dto.MenuDTO">
+        INSERT INTO menu (
+            menu_name,
+            menu_code,
+            menu_category,
+            menu_explain,
+            size,
+            menu_image,
+            menu_price,
+            release_status,
+            in_date
+        )VALUES (
+            #{menuName},
+            #{menuCode},
+            #{menuCategory},
+            #{menuExplain},
+            #{size},
+            #{menuImage},
+            #{menuPrice},
+            #{releaseStatus},
+            NOW()
+            )
+    </insert>
+    <update id="removeMenu">
+        UPDATE menu
+        SET del_date = NOW()
+        WHERE menu_no = #{menuNo}
+    </update>
+</mapper>
