@@ -1,8 +1,6 @@
 package com.erp.repository.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
@@ -13,11 +11,14 @@ import java.util.Date;
 @Builder
 @Setter
 @Getter
+@ToString
 @Table(name = "store_sales")
 public class StoreSales {
     @Id
     private long storeSalesNo;
-    private long storeNo;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_no")
+    private Store store;
     private Date salesDate;
     private Integer salesPrice;
 
