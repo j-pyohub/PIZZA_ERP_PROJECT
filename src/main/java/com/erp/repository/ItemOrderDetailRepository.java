@@ -19,8 +19,10 @@ public interface ItemOrderDetailRepository extends JpaRepository<ItemOrderDetail
                 i.itemName,
                 i.itemCategory,
                 id.orderDetailQuantity,
+                i.supplyUnit,
                 i.itemPrice,
-                id.orderDetailPrice
+                id.orderDetailPrice,
+                id.receiveDatetime
             )
             from ItemOrderDetail id
             left join id.itemNo i

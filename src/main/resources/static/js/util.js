@@ -2,9 +2,7 @@ function fetchUtil(url, action){
     fetch(url)
         .then(data => data.json())
     .then(action)
-    .catch(err => console.error(
-        "에러"
-    ));
+    .catch(err => console.error(err));
 }
 
 $(document).on("click", "#pagination .page-link", function () {
@@ -47,4 +45,30 @@ function updatePaginationUI(page, totalPages) {
     } else {
         pag.find("a[data-page='next']").closest(".page-item").removeClass("disabled");
     }
+
+    renderPagination(page, totalPages);
+}
+
+function renderPagination(page, totalPages) {
+    let html = `
+        <li class="page-item ${page == 1 ? "disabled" : ""}">
+            <a class="page-link" data-page="prev">이전</a>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+        html += `
+            <li class="page-item ${i == page ? "active" : ""}">
+                <a class="page-link" data-page="${i}">${i}</a>
+            </li>
+        `;
+    }
+
+    html += `
+        <li class="page-item ${page == totalPages ? "disabled" : ""}">
+            <a class="page-link" data-page="next">다음</a>
+        </li>
+    `;
+
+    $("#pagination").html(html);
 }

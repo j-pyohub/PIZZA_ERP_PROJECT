@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -15,6 +17,8 @@ public class ItemOrderDetailDTO {
     private String itemName;
     private String itemCategoryName;
     private Integer itemOrderQuantity;
+    private String supplyUnit;
     private Integer itemPrice;
     private Integer itemOrderPrice; // quantity * price
+    private Timestamp receiveDatetime;
 }
