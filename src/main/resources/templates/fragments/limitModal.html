@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>limitModal fragment</title>
+</head>
+<body>
+<div th:fragment="limitModalFragment">
+    <div class="modal fade" id="limitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold">하한선 설정</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-2">
+                        <div class="small text-muted">직영점</div>
+                        <div class="fw-semibold" id="limitStoreName">강남직영</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="small text-muted">품목</div>
+                        <div class="fw-semibold" id="limitItemName">도우 M 230g(레귤러)</div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted">현재 하한선</label>
+                            <div class="border rounded px-2 py-2 bg-light"
+                                 id="limitCurrentText">40 ea
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small text-muted">새 하한선</label>
+                            <div class="input-group input-group-sm">
+                                <input type="number" min="0"
+                                       class="form-control"
+                                       id="limitNew">
+                                <span class="input-group-text" id="limitUnit2">ea</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="limitUseSupply">
+                        <label class="form-check-label small" for="limitUseSupply">
+                            공급단위로 계산
+                        </label>
+                    </div>
+
+                    <div class="row g-2 align-items-center mb-2">
+                        <div class="col-8">
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">공급 수량</span>
+                                <input type="number" min="0" class="form-control"
+                                       id="limitSupplyCount" disabled>
+                                <span class="input-group-text" id="limitSupplyUnit">ea</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-muted" id="limitConvertInfo">
+                        ※ 1 공급단위 = item.convert_stock (예: 1 box = 2,500 g)
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-main btn-sm" id="btnSaveLimit">저장</button>
+                    <button type="button" class="btn btn-outline-secondary btn-sm"
+                            data-bs-dismiss="modal">취소
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
