@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("sales")
+@RequestMapping("/sales")
 public class SalesOrderController {
     @GetMapping("/salesOrderUI")
     public String salesOrder() {
