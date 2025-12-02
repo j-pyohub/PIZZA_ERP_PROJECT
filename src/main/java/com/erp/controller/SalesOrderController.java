@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class SalesOrderController {
     @GetMapping("/salesOrderUI")
     public String salesOrder() {
-        return "sales/salesOrderManagerUI";
+        return "sales/salesOrderUI";
     }
 
     @GetMapping("/addSalesOrderUI")

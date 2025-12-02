@@ -26,7 +26,7 @@ public class SalesRestController {
     private final SalesListService salesListService;
 
     @GetMapping("/salesDetail")
-    public List<StoreDailyMenuSalesDTO> getSalesDetail(
+    public List<StoreMenuSalesSummaryDTO> getSalesDetail(
             @RequestParam Long storeNo,
             @RequestParam String salesDate
     ) {

@@ -115,9 +115,11 @@ public class SalesOrderService {
 
 
     @Transactional(readOnly = true)
-    public Page<SalesOrderDTO> getSalesOrderList(Integer pageNo, LocalDate date, String storeName) {
+    public Page<SalesOrderDTO> getSalesOrderList(Integer pageNo, LocalDate date, String storeName, Long storeNo) {
         Specification<SalesOrder> spec = Specification.where(null);
-
+        if (storeNo != null) {
+            spec = spec.and(SalesOrderSpec.findByStoreNo(storeNo));
+        }
         spec = spec.and(SalesOrderSpec.findByDate(date));
         spec = spec.and(SalesOrderSpec.findByStoreName(storeName));
 
