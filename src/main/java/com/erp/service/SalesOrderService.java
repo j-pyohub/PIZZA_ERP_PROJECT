@@ -96,8 +96,7 @@ public class SalesOrderService {
                 int updatedQty = previousQty - totalQty;
 
                 if (updatedQty < 0 ) {
-                    throw new NoIngredientException("재료 재고 부족으로 주문 불가. 부족 재료: "
-                    + ingredient.getItem().getItemNo());
+                    throw new NoIngredientException("fail");
                 }
 
                 StoreStock newStock = StoreStock.builder()

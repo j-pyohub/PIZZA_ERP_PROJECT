@@ -13,6 +13,6 @@ public class StoreMenuDTO {
     private String menuCode;
     private String menuName;
     private String size;
-    private String menuPrice;
+    private Integer menuPrice;
     private String salesStatus;
 }
