@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/sales/salesOrder")
+@RequestMapping("/sales/getSalesOrder")
 public class SalesOrderRestController {
     private final SalesOrderService salesOrderService;
 

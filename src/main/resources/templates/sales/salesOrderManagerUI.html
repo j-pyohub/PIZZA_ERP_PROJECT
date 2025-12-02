@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>주문 조회 (본사)</title>
-
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/js/util.js"></script>
+    <script src="/js/modalStoreSearch.js"></script>
 
     <style>
 
@@ -60,8 +59,8 @@
     </style>
 </head>
 
-<body class="bg-light py-3">
-<header th:replace="fragments/toolBar :: toolBarManager"></header>
+<body class="bg-light">
+<header th:replace="fragments/toolBar :: toolBar"></header>
 <div class="container custom-container mt-5">
     <div class="bg-white border rounded p-4">
     <div class="p-3">
@@ -75,8 +74,8 @@
         <input id="dateInput" type="date" class="form-control form-control-sm w-150">
 
         <span class="fw-semibold ms-3">직영점</span>
-        <input id="storeInput" type="text" class="form-control form-control-sm w-180">
-
+        <input id="storeInput" type="text" class="form-control form-control-sm w-180" readonly>
+        <div th:replace="fragments/modalStoreSearch :: modalStoreSearch"></div>
         <button id="searchBtn" class="btn custom-btn">검색</button>
         <button id="resetBtn" class="btn btn-outline-secondary">초기화</button>
     </div>
@@ -169,17 +168,20 @@
 <script>
     const salesOrderTable = $("#salesOrderList");
 
-    function loadPage(pageNo, date = null, storeName = null) {
-        const params = new URLSearchParams();
+    function loadPage(pageNo) {
+        const date = $("#dateInput").val();
+        const storeName = $("#storeInput").val();
 
+        const params = new URLSearchParams();
         if (date) params.append("date", date);
         if (storeName) params.append("storeName", storeName);
 
-        fetchUtil(`/salesOrder/salesOrderList/${pageNo}?${params.toString()}`, data => {
+        fetchUtil(`/sales/getSalesOrder/salesOrderList/${pageNo}?${params.toString()}`, data => {
             loadSalesOrderList(data.list);
             updatePaginationUI(data.pageNo, data.totalPages);
         });
     }
+
 
 
     function loadSalesOrderList(data) {
@@ -225,7 +227,7 @@
     $(document).on("click", ".detailBtn", function () {
       const salesOrderNo = $(this).data("salesorderno");
 
-      fetchUtil(`/salesOrder/salesOrderDetail/${salesOrderNo}`, data => {
+      fetchUtil(`/sales/getSalesOrder/salesOrderDetail/${salesOrderNo}`, data => {
         console.log(data);
         $("#detailOrderDate").text(data.salesOrderDatetime);
         $("#detailStoreName").text(data.storeName);
@@ -257,12 +259,17 @@
         loadPage(1, date, storeName);
     });
 
+    $("#searchBtn").on("click", function () {
+        StoreSearchModal.open("", function (storeNo, storeName) {
+            $("#storeInput").val(storeName).trigger("input");
+        });
+    });
+
     $("#storeInput").on("input", function () {
         const date = $("#dateInput").val();
-        const storeName = $(this).val();
-
+        const storeName = $("#storeInput").val();
         loadPage(1, date, storeName);
-    })
+    });
 
     /* 검색 / 초기화 */
     $("#resetBtn").on("click", function () {
@@ -271,11 +278,6 @@
 
         loadPage(1);
     });
-
-    $("#searchBtn").on("click", function () {
-        alert("검색 기능은 백엔드 연동 후 작동합니다.");
-    });
-
 </script>
 
 </body>
