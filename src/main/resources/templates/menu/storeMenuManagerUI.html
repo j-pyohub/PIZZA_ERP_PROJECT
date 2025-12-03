@@ -11,7 +11,14 @@
     <script src="/js/modalStoreSearch.js"></script>
 
     <style>
-        body { background:#f7f7f7; }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 2000;
+        }
+        body { background:#f7f7f7; padding-top: 65px !important;}
         .container { max-width:1500px; }
         .scroll-area { height:500px; overflow-y:auto; }
         .scroll-area::-webkit-scrollbar { width:8px; }
@@ -26,7 +33,7 @@
 </head>
 
 <body class="bg-light">
-
+<header th:insert="fragments/toolBar :: toolBar"></header>
 <div class="container py-4">
 
     <div class="bg-white border rounded p-4">
@@ -307,14 +314,9 @@
 
     $("#searchBtn").on("click", loadMenuTable);
 
-
-    /* --------------------------------------------------------
-        전체 체크
-    -------------------------------------------------------- */
     $("#checkAll").on("change", function(){
         $(".row-check").prop("checked", this.checked);
     });
-
 
     $(document).on("click", ".statusSetBtn", function(){
 
@@ -422,7 +424,6 @@
     });
 
 </script>
-
 
 </body>
 </html>
