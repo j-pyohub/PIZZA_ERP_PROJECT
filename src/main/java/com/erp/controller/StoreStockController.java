@@ -22,7 +22,7 @@ public class StoreStockController {
     public String store(Model model,
                         @AuthenticationPrincipal PrincipalDetails p) {
         model.addAttribute("role", "STORE");
-        model.addAttribute("storeNo", p != null ? p.getStoreNo() : null);
+        model.addAttribute("storeNo", p != null ? p.getStore().getStoreNo() : null);
         return "stock/storeStockStoreUI";
     }
 }

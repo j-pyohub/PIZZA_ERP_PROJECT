@@ -31,7 +31,7 @@ public class StoreItemRestController {
                                                        SearchRequestDTO request,
                                                        @AuthenticationPrincipal PrincipalDetails p) {
         request.setPage(Math.max(0, pageNo - 1));
-        if (p != null && p.getStoreNo() != null) request.setStoreNo(p.getStoreNo());
+        if (p != null) request.setStoreNo(p.getStore().getStoreNo());
         return storeItemService.getStoreItems(request);
     }
 

@@ -82,7 +82,7 @@
 
             <span class="fw-semibold">주문 일자</span>
             <input id="dateInput" type="date" class="form-control form-control-sm w-150">
-            <div sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
+            <div class="d-inline-flex align-items-center gap-2" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">
                 <span class="fw-semibold ms-3" >직영점</span>
                 <input id="storeInput" type="text" class="form-control form-control-sm w-180" readonly>
                 <div th:replace="fragments/modalStoreSearch :: modalStoreSearch"></div>

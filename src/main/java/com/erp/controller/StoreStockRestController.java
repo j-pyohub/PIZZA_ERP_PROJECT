@@ -31,7 +31,7 @@ public class StoreStockRestController {
                                                        @AuthenticationPrincipal PrincipalDetails p) {
         req.setPage(page);
         if (req.getSize() == null) req.setSize(10);
-        if (p != null && p.getStoreNo() != null) req.setStoreNo(p.getStoreNo());
+        if (p != null) req.setStoreNo(p.getStore().getStoreNo());
         return storeStockService.search(req);
     }
 }
