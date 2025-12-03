@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+                xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>메뉴 상세보기</title>
@@ -46,8 +47,8 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">메뉴 상세보기</h2>
         <div class="d-flex gap-2">
-            <button class="btn custom-btn" id="menuSetBtn">수정</button>
-            <button class="btn gray-btn" id="menuDelBtn">삭제</button>
+            <button class="btn custom-btn" id="menuSetBtn" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">수정</button>
+            <button class="btn gray-btn" id="menuDelBtn" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">삭제</button>
             <button class="btn btn-outline-secondary" id="menuListBtn">목록</button>
         </div>
     </div>
@@ -56,7 +57,7 @@
     <div class="bg-white rounded p-4 shadow-sm mb-4">
         <h5 class="fw-bold mb-3">기본 정보</h5>
         <div class="row g-3">
-            <<input type="hidden" id="menuNos" th:value="${menuNos}">
+            <input type="hidden" id="menuNos" th:value="${menuNos}">
             <div class="col-md-4">
                 <label class="form-label fw-semibold">카테고리</label>
                 <div class="border rounded px-3 py-2 bg-light" th:text="${menu.menuCategory}"></div>

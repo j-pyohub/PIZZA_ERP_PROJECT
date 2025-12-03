@@ -1,10 +1,12 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <div th:fragment="toolBar">
-
     <style>
         html, body {
             margin: 0;
             padding: 0;
         }
+
         /* 상단바 전체 */
         .top-bar {
             width: 100%;
@@ -95,16 +97,16 @@
             <div class="menu-item dropdown">
                 <span>매출 ▾</span>
                 <div class="dropdown-menu">
-                    <a href="/manager/salesMain">전체 매출 조회</a>
-                    <a href="#">직영점별 매출 조회</a>
-                    <a href="#">직영점별 주문 조회</a>
+                    <a href="/manager/salesMain" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">매출 조회</a>
+                    <a href="/store/storeSalesMain" sec:authorize="hasRole('ROLE_STORE')">매출 조회</a>
+                    <a href="/sales/salesOrderUI">주문 조회</a>
                 </div>
             </div>
 
             <div class="menu-item dropdown">
                 <span>품목/재고 ▾</span>
                 <div class="dropdown-menu">
-                    <a href="#">품목 등록</a>
+                    <a href="#" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">품목 등록</a>
                     <a href="#">품목 조회</a>
                     <a href="#">재고 현황 조회</a>
                     <a href="#">재고 변동 조회</a>
@@ -116,9 +118,10 @@
             <div class="menu-item dropdown">
                 <span>메뉴 ▾</span>
                 <div class="dropdown-menu">
-                    <a href="#">메뉴 등록</a>
+                    <a href="#" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">메뉴 등록</a>
                     <a href="/menu">메뉴 조회</a>
-                    <a href="#">직영점 판매 메뉴 관리</a>
+                    <a href="#" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">판매 메뉴 관리</a>
+                    <a href="#" sec:authorize="hasRole('ROLE_STORE')">판매 메뉴 관리</a>
                 </div>
             </div>
 
@@ -128,7 +131,8 @@
         </div>
 
         <div class="right-section">
-            <span class="store-name">금천구청점</span>
+            <span class="name" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">홍길동</span>
+            <span class="store-name" sec:authorize="hasRole('ROLE_STORE')">금천구청점</span>
             <button class="logout-btn" id="logoutBtn">로그아웃</button>
         </div>
     </div>

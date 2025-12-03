@@ -37,7 +37,7 @@ public class StoreSalesRestController {
             @RequestParam(defaultValue = "1") int page
     ) {
 
-        Long storeNo = principal.getStoreNo();
+        Long storeNo = principal.getStore().getStoreNo();
 
         Pageable pageable = PageRequest.of(page - 1, 10);
 
@@ -61,7 +61,7 @@ public class StoreSalesRestController {
             String endDate,
             String type
     ) {
-        Long storeNo = principal.getStoreNo();
+        Long storeNo = principal.getStore().getStoreNo();
 
         return salesKPIService.getStoreKPI(
                 storeNo,
@@ -79,7 +79,7 @@ public class StoreSalesRestController {
             String type
     ) {
 
-        Long storeNo = principal.getStoreNo();
+        Long storeNo = principal.getStore().getStoreNo();
 
         return salesChartService.getSalesChartByStore(
                 storeNo,

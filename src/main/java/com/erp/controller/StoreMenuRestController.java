@@ -23,7 +23,7 @@ public class StoreMenuRestController {
             @RequestParam(required = false) String salesStatus,
             @RequestParam(required = false) String menuCategory ){
 
-        Long storeNo = principal.getStoreNo();
+        Long storeNo = principal.getStore().getStoreNo();
         return storeMenuService.getStoreMenuList( storeNo, menuName, salesStatus, menuCategory );
     }
 

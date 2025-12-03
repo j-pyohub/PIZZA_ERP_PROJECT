@@ -1,6 +1,7 @@
 package com.erp.auth;
 
 import com.erp.dto.ManagerDTO;
+import com.erp.dto.StoreDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,15 +13,19 @@ import java.util.List;
 public class PrincipalDetails implements UserDetails {
 
     private final ManagerDTO manager;
-    private Long storeNo;
+    private StoreDTO store;   // ★ 매장 정보 전체 저장
 
-    public ManagerDTO getManager(){ return manager; }
-    public void setStoreNo(Long storeNo) { this.storeNo = storeNo; }
+    public ManagerDTO getManager() { return manager; }
+
+    public void setStore(StoreDTO store) { this.store = store; }
+    public StoreDTO getStore() { return store; }
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(() -> manager.getRole());
     }
+
     @Override
     public String getPassword() {
         return manager.getPw();
@@ -28,11 +33,7 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return manager.getManagerId(); // 로그인 ID
+        return manager.getManagerId();
     }
-
-    public Long getStoreNo() {
-        return storeNo;
-    }
-
 }
+

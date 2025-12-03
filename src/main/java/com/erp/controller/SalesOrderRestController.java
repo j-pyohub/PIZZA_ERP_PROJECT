@@ -28,7 +28,7 @@ public class SalesOrderRestController {
             ) {
         Long storeNo = null;
         if (principalDetails.getManager().getRole().equals("ROLE_STORE")){
-            storeNo = principalDetails.getStoreNo();
+            storeNo = principalDetails.getStore().getStoreNo();
             storeName = null;
         }
         Page<SalesOrderDTO> page =

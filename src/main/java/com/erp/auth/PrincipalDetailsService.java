@@ -3,6 +3,7 @@ package com.erp.auth;
 import com.erp.dao.ManagerDAO;
 import com.erp.dao.StoreDAO;
 import com.erp.dto.ManagerDTO;
+import com.erp.dto.StoreDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -29,7 +30,8 @@ public class PrincipalDetailsService implements UserDetailsService {
         PrincipalDetails pd = new PrincipalDetails(manager);
         if ("ROLE_STORE".equals(manager.getRole())) {
             Long storeNo = storeDAO.getStoreNoByManager(managerId);
-            pd.setStoreNo(storeNo);
+            StoreDTO storeDTO = storeDAO.getStoreDetail(storeNo);  // storeName, phone, address 등 가져오기
+            pd.setStore(storeDTO);
         }
 
         return pd;
