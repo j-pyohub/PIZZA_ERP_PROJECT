@@ -131,8 +131,10 @@
         </div>
 
         <div class="right-section">
-            <span class="name" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">홍길동</span>
-            <span class="store-name" sec:authorize="hasRole('ROLE_STORE')">금천구청점</span>
+            <span sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">본사</span>
+            <span class="store-name" sec:authorize="hasRole('ROLE_STORE')"
+                              sec:authentication="principal.store.storeName"></span>
+            <span class="name" sec:authentication="principal.manager.managerName"></span>
             <button class="logout-btn" id="logoutBtn">로그아웃</button>
         </div>
     </div>
