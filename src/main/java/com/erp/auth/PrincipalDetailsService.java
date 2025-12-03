@@ -31,6 +31,7 @@ public class PrincipalDetailsService implements UserDetailsService {
         if ("ROLE_STORE".equals(manager.getRole())) {
             Long storeNo = storeDAO.getStoreNoByManager(managerId);
             StoreDTO storeDTO = storeDAO.getStoreDetail(storeNo);  // storeName, phone, address 등 가져오기
+
             pd.setStore(storeDTO);
         }
 

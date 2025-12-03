@@ -182,13 +182,12 @@
   function loadPage(pageNo) {
     const storeNo = $("#store_search_input").data("storeno") == null ? "0" : $("#store_search_input").data("storeno");
     const params = new URLSearchParams({
-      storeNo: storeNo,
       orderStatus: $("#order-status").val(),
       startDate: $("#start-date").val(),
       endDate: $("#end-date").val(),
       pageNo: pageNo-1
     });
-    fetchUtil(`/itemOrder/itemOrderListFilter?${params.toString()}`, (data)=>{
+    fetchUtil(`/itemOrder/itemOrderListFilter/${storeNo}?${params.toString()}`, (data)=>{
       loadItemOrderTable(data);
       updatePaginationUI(data.pageNo, data.totalPages);
     });

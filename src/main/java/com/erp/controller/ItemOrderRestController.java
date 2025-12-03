@@ -3,6 +3,8 @@ package com.erp.controller;
 import com.erp.auth.PrincipalDetails;
 import com.erp.controller.exception.ItemOrderNotFoundException;
 import com.erp.controller.exception.StoreItemNotFoundException;
+import com.erp.controller.exception.StoreNotFoundException;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.*;
 import com.erp.repository.entity.ItemProposal;
 import com.erp.service.ItemOrderService;
@@ -23,6 +25,8 @@ import java.util.Map;
 public class ItemOrderRestController {
     @Autowired
     ItemOrderService itemOrderService;
+    @Autowired
+    private StoreDAO storeDAO;
 
     @GetMapping("/itemOrder/itemOrderListAll")
     public Map<String, Object> itemOrderList(@RequestParam int pageNo) {
@@ -39,9 +43,26 @@ public class ItemOrderRestController {
                                                  @RequestParam String startDate,
                                                  @RequestParam String endDate,
                                                  @RequestParam String orderStatus,
-                                                   @AuthenticationPrincipal PrincipalDetails dp) {
-        System.out.println("!!!!!!!!!storeNo: "+dp.getStore().getStoreNo());
-        Page<ItemOrderDTO> page = itemOrderService.getItemOrderList(pageNo, dp.getStore().getStoreNo(), orderStatus, startDate, endDate);
+                                                 @AuthenticationPrincipal PrincipalDetails dp) {
+        String managerId = dp.getManager().getManagerId();
+        Long storeNo = storeDAO.getStoreNoByManager(managerId);
+        if(storeNo == null) storeNo = 0L;
+
+        Page<ItemOrderDTO> page = itemOrderService.getItemOrderList(pageNo, storeNo, orderStatus, startDate, endDate);
+        return Map.of(
+                "list", page.getContent(),
+                "totalPages", page.getTotalPages(),
+                "pageNo", page.getNumber() + 1,
+                "totalElement", page.getTotalElements()
+        );
+    }
+    @GetMapping("/itemOrder/itemOrderListFilter/{storeNo}")
+    public Map<String, Object> itemOrderListFilter(@PathVariable Long storeNo,
+                                                   @RequestParam int pageNo,
+                                                   @RequestParam String startDate,
+                                                   @RequestParam String endDate,
+                                                   @RequestParam String orderStatus) {
+        Page<ItemOrderDTO> page = itemOrderService.getItemOrderList(pageNo, storeNo, orderStatus, startDate, endDate);
         return Map.of(
                 "list", page.getContent(),
                 "totalPages", page.getTotalPages(),
