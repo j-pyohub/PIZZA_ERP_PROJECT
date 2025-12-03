@@ -28,7 +28,7 @@
         font-family:"Noto Sans KR",sans-serif;
     }
 
-    h3 { margin:0; padding:20px 20px 20px 20px; }
+    h3 { margin:0; padding:20px 20px 0px 20px; }
 
     .p-4 {
         flex: 1;               /* 헤더 제외 전체 영역 */
@@ -46,6 +46,7 @@
         flex-direction:column;
         min-height:0;
         flex: 1;
+        border:1px solid #dee2e6;
     }
 
     .scroll-area {
@@ -55,7 +56,11 @@
         overflow-x:hidden;
         scrollbar-gutter: stable;
     }
-
+    .scroll-area::-webkit-scrollbar { width:8px; }
+    .scroll-area::-webkit-scrollbar-thumb {
+        background:#ced4da;
+        border-radius:4px;
+    }
     .table-rounded {
         border-collapse: separate;
         border-spacing: 0;
@@ -63,6 +68,7 @@
         background:white;
         width:100%;
         table-layout: fixed;
+        text-align: center;
     }
 
     .table-rounded thead {
@@ -101,35 +107,31 @@
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        width: 1500px;
+        min-width: 1500px;
     }
 </style>
 </head>
 
 <body>
 <header th:replace="fragments/toolBar :: toolBar"></header>
-<div class="p-4 container"><div>
-    <div class="d-flex align-items-center px-3">
-        <h3 class="fw-bold m-0">발주 제안</h3>
-        <div>
+<div class="container" id="content-area">
+    <div class="d-flex">
+        <h3 class="fw-bold">발주 제안</h3>
+        <div class="d-flex flex-column justify-content-end">
             <input id="storeSearchInput"
                    class="btn btn-light border dropdown-toggle"
                    type="button"
                    value="직영점 선택"
-                   style="min-width:180px;">
+                   style="min-width:180px;height: 40px">
         </div>
     </div>
-</div>
-<div class="card-box mb-4 container d-flex flex-column" id="content-area">
     <div class="top-section">
         <div class="panel">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-semibold">발주 추천 목록</h5>
-                <div>
-                    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal" id="item_proposal_history">
-                        제안 내역
-                    </button>
-                </div>
+            <div class="d-flex">
+                <h5 class="fw-semibold m-1 me-3">발주 추천 목록</h5>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal" id="item_proposal_history">
+                    제안 내역
+                </button>
             </div>
             <div class="scroll-area">
                 <table class="table table-rounded table-sm align-middle shadow-sm" id="item-proposal">
@@ -158,41 +160,51 @@
 
     <div class="bottom-section">
         <div class="panel">
-            <h5 class="fw-semibold mb-3">재고 현황</h5>
-
-            <div class="d-flex mb-3">
-                <select class="form-select me-2" style="width:150px;">
+            <div class="d-flex">
+                <div class="d-flex justify-content-center align-items-center">
+                    <h5 class="fw-semibold me-3">재고 현황</h5>
+                </div>
+                <select class="form-select me-2" style="width:150px;" id="sort_select">
                     <option>기본순</option><option>추천순</option><option>하한선순</option>
                 </select>
 
-                <select class="form-select me-2" style="width:150px;">
-                    <option>전체</option><option>도우</option><option>소스</option><option>치즈</option>
+                <select class="form-select me-2" style="width:150px;" id="category_select">
+                    <option>전체</option>
+                    <option>도우</option>
+                    <option>치즈</option>
+                    <option>토핑</option>
+                    <option>소스</option>
+                    <option>향신료</option>
+                    <option>야채</option>
+                    <option>면</option>
+                    <option>사이드</option>
+                    <option>음료</option>
                 </select>
 
                 <input type="text" class="form-control me-2" style="width:200px;" placeholder="검색어 입력" id="search-input">
                 <button class="btn btn-warning" id="search-btn">조회</button>
             </div>
-
             <div class="scroll-area">
                 <table class="table table-rounded table-hover table-sm align-middle shadow-sm" id="item_toOrder">
                     <thead>
-                        <tr>
-                            <th>품목코드</th>
-                            <th>품목명</th>
-                            <th>카테고리</th>
-                            <th>하한선</th>
-                            <th>실재고</th>
-                            <th>공급단위</th>
-                            <th>공급가격</th>
-                            <th class="text-center">담기</th>
-                        </tr>
+                    <tr>
+                        <th>품목코드</th>
+                        <th>품목명</th>
+                        <th>카테고리</th>
+                        <th>하한선</th>
+                        <th>실재고</th>
+                        <th>공급단위</th>
+                        <th>공급가격</th>
+                        <th class="text-center">담기</th>
+                    </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                    <td colspan="8" style="justify-items: center"><div>직영점을 선택해주세요.</div></td>
+                    </tbody>
                 </table>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 <!-- =========================
@@ -359,27 +371,43 @@
 
     searchButton.on("click", function(){
         const keyword = searchInput.val().trim().toLowerCase();
-        const rows = itemToOrder.find("tbody tr");
+        const rows = originalRows.slice();
 
-        rows.each(function(){
-            const code = $(this).find("td").eq(0).text().trim().toLowerCase();
-            const name = $(this).find("td").eq(1).text().trim().toLowerCase();
-            const category = $(this).find("td").eq(2).text().trim().toLowerCase();
+        let categorySelected = $("#category_select").val();
+        categorySelected = categorySelected === "전체" ? "" : categorySelected;
 
-            // 키워드 포함 여부 확인
-            const isMatch =
-                code.includes(keyword) ||
+        const filtered = rows.filter(tr=>{
+            const $td = $(tr).find("td");
+            const code = $td.eq(0).text().trim().toLowerCase();
+            const name = $td.eq(1).text().trim().toLowerCase();
+            const category = $td.eq(2).text().trim().toLowerCase();
+
+            const keywordMatch = code.includes(keyword) ||
                 name.includes(keyword) ||
                 category.includes(keyword);
+            const categoryMatch = category.includes(categorySelected);
 
-            $(this).toggle(isMatch || keyword === "");
-        })
+            return keywordMatch && categoryMatch;
+        });
+
+        const sortSelect = $("#sort_select").val();
+        if(sortSelect === "추천순")
+            filtered.sort((a, b) => {
+                const prevOrderCnt = $(a).data("itemordercnt");
+                const currentOrderCnt = $(b).data("itemordercnt");
+                return currentOrderCnt - prevOrderCnt;
+            });
+        else if(sortSelect === "기본순")
+            filtered.sort((a, b) => {
+                const prevOrderCnt = $(a).data("index");
+                const currentOrderCnt = $(b).data("index");
+                return prevOrderCnt - currentOrderCnt;
+            });
+
+        const tbody = itemToOrder.find("tbody");
+        tbody.empty();
+        filtered.forEach(tr => tbody.append(tr));
     });
-    //
-    // $("#store_modal").on("click", ".store_select_btn", function() {
-    //     const storeName = $(this).closest("tr").find(".store_name").text();
-    //     $("#selected_store").text(storeName);
-    // });
 
     // 중복 검사
     function hasDuplicate(name) {
@@ -405,12 +433,14 @@
     calcTotal();
 
 
+    let originalRows = [];
     function load_itemList(data){
         const tbody = itemToOrder.find("tbody");
         tbody.empty();
+        originalRows = [];
 
-        data.forEach(item => {
-            let row = `<tr data-itemno="${item.itemNo}">
+        data.forEach((item, idx) => {
+            let row = $(`<tr data-itemno="${item.itemNo}" data-itemordercnt="${item.itemOrderCnt}" data-index="${idx}">
                            <td>${item.itemCode}</td>
                            <td>${item.itemName}</td>
                            <td>${item.itemCategory}</td>
@@ -421,7 +451,9 @@
                            <td class="text-center">
                            <button class="btn btn-warning btn-sm add_btn">담기</button>
                            </td>
-                       </tr>`;
+                       </tr>`);
+
+            originalRows.push(row[0]);
             tbody.append(row);
         });
     }

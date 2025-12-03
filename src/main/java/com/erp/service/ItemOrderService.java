@@ -90,8 +90,6 @@ public class ItemOrderService {
     public void receiveItem(Long itemOrderDetailNo){;
         ItemOrderDetail orderDetail = orderDetailRepo.findByItemOrderDetailNo(itemOrderDetailNo);
 
-
-        System.out.println(orderDetail.getItemOrderNo().getStoreNo().getStoreNo() +" - "+ orderDetail.getItemNo().getItemNo());
         // 재고 수량 변경
         StoreItem storeItem = null;
         List<StoreItem> storeItemList = storeItemRepo.findByStoreNoAndItemNo(orderDetail.getItemOrderNo().getStoreNo().getStoreNo(), orderDetail.getItemNo().getItemNo()); // 매장 품목 정보 획득
@@ -120,7 +118,7 @@ public class ItemOrderService {
                         .changeDatetime(new Timestamp(System.currentTimeMillis()))
                         .changeQuantity(orderDetail.getOrderDetailQuantity())
                         .changeReason("입고")
-                        .currentQuantity(currentQuantity + orderDetail.getOrderDetailQuantity())
+                        .currentQuantity(currentQuantity + (orderDetail.getOrderDetailQuantity() * orderDetail.getItemNo().getConvertStock()))
                         .build()
         ); // 입고 수량 반영
 

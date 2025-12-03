@@ -1,5 +1,6 @@
 package com.erp.controller;
 
+import com.erp.auth.PrincipalDetails;
 import com.erp.controller.exception.ItemOrderNotFoundException;
 import com.erp.controller.exception.StoreItemNotFoundException;
 import com.erp.dto.*;
@@ -9,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,7 +79,7 @@ public class ItemOrderRestController {
     }
 
     @GetMapping("/itemOrder/itemProposalHistory/{storeNo}")
-    public List<ItemProposalDTO> proposalItemOrderHistory(@PathVariable Long storeNo) {
+    public List<ItemProposalDTO> proposalItemOrderHistory(@AuthenticationPrincipal PrincipalDetails) {
         return itemOrderService.getItemProposalHistoryByStoreNo(storeNo);
     }
     @GetMapping("/itemOrder/itemProposal/{storeNo}")

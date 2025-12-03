@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class OrderItemDTO {
     private Long itemNo;
     private int itemQuantity;
+    private int itemConvertStock;
     private int itemOrderPrice;
 }
