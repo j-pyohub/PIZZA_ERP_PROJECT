@@ -24,6 +24,12 @@
         .erp-stock-history table.stock-table tbody tr{ background:#fff !important; }
         .erp-stock-history table.stock-table tbody tr:nth-of-type(odd),
         .erp-stock-history table.stock-table tbody tr:nth-of-type(even){ background:#fff !important; }
+        /* 폐기사유 칸: 한 줄 33자 내외 + 줄바꿈 */
+        .erp-stock-history .reason-cell {
+            max-width: 33ch;       /* 한 줄 약 33글자 폭 */
+            white-space: normal;   /* 일반 줄바꿈 허용 */
+            word-break: break-all; /* 띄어쓰기 없어도 강제 줄바꿈 */
+        }
 
         .erp-stock-history td.text-end.chg-plus{ color:#0d6efd !important; font-weight:700; }
         .erp-stock-history td.text-end.chg-minus{ color:#dc3545 !important; font-weight:700; }
