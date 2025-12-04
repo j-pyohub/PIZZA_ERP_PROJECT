@@ -6,6 +6,7 @@ import com.erp.dto.PageResponseDTO;
 import com.erp.dto.StoreStockDTO;
 import com.erp.service.StoreStockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,13 +26,14 @@ public class StoreStockRestController {
     }
 
     /** 직영점 변동 목록 → /store/stock/storeStock/list/{page} (로그인 사용자 storeNo 강제) */
+    @PreAuthorize("hasRole('STORE') and principal.store != null")
     @GetMapping("/store/stock/storeStock/list/{page}")
     public PageResponseDTO<StoreStockDTO> listForStore(@PathVariable int page,
                                                        @ModelAttribute SearchRequestDTO req,
                                                        @AuthenticationPrincipal PrincipalDetails p) {
         req.setPage(page);
         if (req.getSize() == null) req.setSize(10);
-        if (p != null) req.setStoreNo(p.getStore().getStoreNo());
+        req.setStoreNo(p.getStore().getStoreNo()); // null 체크 제거
         return storeStockService.search(req);
     }
 }

@@ -7,6 +7,7 @@ import com.erp.dto.StoreItemDTO;
 import com.erp.service.StoreItemService;
 import com.erp.service.StoreStockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +27,13 @@ public class StoreItemRestController {
     }
 
     /** 직영점 목록 API → /store/stock/storeItem/list/{pageNo} (로그인 사용자 storeNo 강제) */
+    @PreAuthorize("hasRole('STORE') and principal.store != null")
     @GetMapping("/store/stock/storeItem/list/{pageNo}")
     public PageResponseDTO<StoreItemDTO> getStoreItems(@PathVariable int pageNo,
                                                        SearchRequestDTO request,
                                                        @AuthenticationPrincipal PrincipalDetails p) {
         request.setPage(Math.max(0, pageNo - 1));
-        if (p != null) request.setStoreNo(p.getStore().getStoreNo());
+        request.setStoreNo(p.getStore().getStoreNo()); // null 체크 제거
         return storeItemService.getStoreItems(request);
     }
 
@@ -43,6 +45,7 @@ public class StoreItemRestController {
     }
 
     /** 하한선 저장(직영점) → /store/stock/storeItem/{storeItemNo}/limit */
+    @PreAuthorize("hasRole('STORE') and principal.store != null")
     @PostMapping("/store/stock/storeItem/{storeItemNo}/limit")
     public void updateLimitByStore(@PathVariable Long storeItemNo,
                                    @RequestParam(required = false) Integer newLimit) {
@@ -50,6 +53,7 @@ public class StoreItemRestController {
     }
 
     /** 폐기 등록(직영점) → /store/stock/storeItem/{storeItemNo}/dispose */
+    @PreAuthorize("hasRole('STORE') and principal.store != null")
     @PostMapping("/store/stock/storeItem/{storeItemNo}/dispose")
     public java.util.Map<String, Object> dispose(@PathVariable Long storeItemNo,
                                                  @RequestParam int quantity,

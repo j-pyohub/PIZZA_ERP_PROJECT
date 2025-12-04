@@ -21,7 +21,7 @@ public class ItemRestController {
 
     /** 단건 조회 (모두 허용) */
     @GetMapping("/{itemNo}")
-    public ResponseEntity<ItemDTO> findOne(@PathVariable Long itemNo) {
+    public ResponseEntity<ItemDTO> findOne(@PathVariable Long itemNo){
         ItemDTO dto = itemService.getDetail(itemNo);
         return (dto == null) ? ResponseEntity.notFound().build() : ResponseEntity.ok(dto);
     }
@@ -122,7 +122,7 @@ public class ItemRestController {
     /** 삭제(소프트) (ADMIN / MANAGER만) */
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @DeleteMapping("/{itemNo}")
-    public ResponseEntity<?> delete(@PathVariable Long itemNo) {
+    public ResponseEntity<?> delete(@PathVariable Long itemNo){
         int r = itemService.removeItem(itemNo);
         return (r == 1) ? ResponseEntity.ok().build() : ResponseEntity.badRequest().body("삭제 실패");
     }
