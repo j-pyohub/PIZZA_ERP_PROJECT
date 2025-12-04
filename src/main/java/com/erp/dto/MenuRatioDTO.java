@@ -9,5 +9,5 @@ import lombok.*;
 @ToString
 public class MenuRatioDTO {
     private String menuName;
-    private Integer salesAmount;
+    private Long salesAmount;
 }

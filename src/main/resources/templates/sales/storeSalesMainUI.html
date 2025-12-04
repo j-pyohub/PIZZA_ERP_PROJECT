@@ -8,11 +8,6 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script>
-    function loadPage(page){
-      loadList(page);
-    }
-  </script>
   <script src="/js/util.js"></script>
 
   <style>
@@ -23,7 +18,7 @@
       width: 100%;
       z-index: 2000;
     }
-    body { background-color: #fdfdfd;      padding-top: 65px !important; }
+    body { background-color:#fdfdfd; padding-top:65px !important; }
 
     .max-1500 { max-width:1500px; margin:0 auto; }
     .kpi-card { background:#fff; border:1px solid #ccc; border-radius:10px; padding:18px; text-align:center; }
@@ -39,9 +34,10 @@
 
 <body>
 <header th:insert="fragments/toolBar :: toolBar"></header>
+
 <div class="p-2 max-1500">
 
-
+  <!-- 보기 버튼 -->
   <div class="mt-3 px-2">
     <div class="d-flex align-items-center mb-2">
       <span class="me-2">보기</span>
@@ -52,37 +48,47 @@
     </div>
   </div>
 
+  <!-- 차트 페이지 -->
   <div id="chartPage">
+
+    <!-- 조회 조건 -->
     <div class="d-flex align-items-center flex-wrap gap-3 mb-3 px-2">
       <div>
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="day" class="form-check-input">
           <span>일별</span>
         </label>
+
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="week" class="form-check-input">
           <span>주별</span>
         </label>
+
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="month" class="form-check-input" checked>
           <span>월별</span>
         </label>
+
         <label class="form-check form-check-inline">
           <input type="radio" name="period" id="year" class="form-check-input">
           <span>연별</span>
         </label>
       </div>
+
       <div class="d-flex align-items-center gap-2">
         <span class="fw-semibold">조회기간</span>
+
         <div id="periodInputs" class="d-flex align-items-center gap-2">
           <input id="startInput" type="month" class="form-control form-control-sm w-150">
           <span>~</span>
           <input id="endInput" type="month" class="form-control form-control-sm w-150">
         </div>
+
         <button id="getSalesBtn" class="btn btn-primary btn-sm">조회</button>
       </div>
     </div>
 
+    <!-- KPI -->
     <div class="row g-3 mb-3 px-2">
       <div class="col-md-3">
         <div class="kpi-card">
@@ -90,31 +96,38 @@
           <div class="kpi-value" id="kpi-totalSales">-</div>
         </div>
       </div>
+
       <div class="col-md-3">
         <div class="kpi-card">
           <div class="kpi-title">총 판매 수량</div>
           <div class="kpi-value" id="kpi-totalMenu">-</div>
         </div>
       </div>
+
       <div class="col-md-3">
         <div class="kpi-card">
           <div class="kpi-title">평균 단가</div>
           <div class="kpi-value" id="kpi-avgPrice">-</div>
         </div>
       </div>
+
       <div class="col-md-3">
         <div class="kpi-card">
-          <div class="kpi-title kpi-compare">전주 대비 매출 증가</div>
+          <div class="kpi-title">전주 대비 매출 증가</div>
           <div class="kpi-value" id="kpi-growth">-</div>
         </div>
       </div>
     </div>
 
+    <!-- 메인차트 -->
     <div class="section-box mx-2 mb-4">
       <h6 class="fw-bold mb-3">전체 매출 추이</h6>
       <canvas id="mainChart" height="90"></canvas>
     </div>
+
+    <!-- TOP5 + 메뉴비중 -->
     <div class="row g-3 mb-3 px-2">
+
       <div class="col-md-6">
         <div class="section-box">
           <h6 class="fw-bold mb-3">최근 30일 지점별 매출 TOP 5</h6>
@@ -129,11 +142,11 @@
         </div>
       </div>
     </div>
+
   </div>
 
 
-
-
+  <!-- 리스트 페이지 -->
   <div id="listPage">
 
     <div class="section-box mx-2 mt-3">
@@ -145,7 +158,6 @@
         <input type="date" id="list-start" class="form-control form-control-sm w-150">
         <span>~</span>
         <input type="date" id="list-end" class="form-control form-control-sm w-150">
-
 
         <button class="btn btn-sm btn-outline-secondary" id="list-searchBtn">검색</button>
       </div>
@@ -160,6 +172,7 @@
           <th></th>
         </tr>
         </thead>
+
         <tbody id="storeTable"></tbody>
       </table>
 
@@ -172,16 +185,19 @@
 
 </div>
 
+
 <script>
-  $(document).on("click", "#logoutBtn", function () {
+
+  $(document).on("click", "#logoutBtn", function(){
     location.href = "/logout";
   });
 
-
+  /* -----------------------------
+   * 날짜 제한 (달력 min/max)
+   * ----------------------------- */
   $(document).on("change", "#startInput", function () {
     const start = $(this).val();
     $("#endInput").attr("min", start);
-
     if ($("#endInput").val() && $("#endInput").val() < start) {
       $("#endInput").val(start);
     }
@@ -190,35 +206,18 @@
   $(document).on("change", "#endInput", function () {
     const end = $(this).val();
     $("#startInput").attr("max", end);
-
     if ($("#startInput").val() && $("#startInput").val() > end) {
       $("#startInput").val(end);
     }
   });
 
-  $("#getSalesBtn").on("click", function () {
-
-    const type = $("input[name='period']:checked").attr("id");
-
-    const start = $("#startInput").val();
-    const end   = $("#endInput").val();
-
-    if (!start || !end) {
-      alert("조회기간을 입력하세요.");
-      return;
-    }
-
-    loadTrend(type, start, end);
-    loadKPI(type, start, end);
-  });
-
-
-  $("#chartBtn").on("click", ()=>showChart());
-  $("#listBtn").on("click", ()=>showList());
-
+  /* -----------------------------
+   * 차트/목록 버튼
+   * ----------------------------- */
   function updateModeButtons(mode){
     $("#chartBtn").toggleClass("btn-warning", mode==="chart")
             .toggleClass("btn-outline-secondary", mode!=="chart");
+
     $("#listBtn").toggleClass("btn-warning", mode==="list")
             .toggleClass("btn-outline-secondary", mode!=="list");
   }
@@ -226,23 +225,30 @@
   function showChart(){ $("#chartPage").show(); $("#listPage").hide(); updateModeButtons("chart"); }
   function showList(){ $("#chartPage").hide(); $("#listPage").show(); updateModeButtons("list"); }
 
+  $("#chartBtn").on("click", ()=>showChart());
+  $("#listBtn").on("click", ()=>showList());
 
-
+  /* -----------------------------
+   * 일/주/월/년 기간 입력 UI 변경
+   * ----------------------------- */
   function updatePeriodInputs(type){
     const box = $("#periodInputs");
     const tpl = {
       day:`<input id="startInput" type="date" class="form-control form-control-sm w-150">
-           <span>~</span>
-           <input id="endInput" type="date" class="form-control form-control-sm w-150">`,
+                 <span>~</span>
+                 <input id="endInput" type="date" class="form-control form-control-sm w-150">`,
+
       week:`<input id="startInput" type="week" class="form-control form-control-sm w-150">
-            <span>~</span>
-            <input id="endInput" type="week" class="form-control form-control-sm w-150">`,
+                  <span>~</span>
+                  <input id="endInput" type="week" class="form-control form-control-sm w-150">`,
+
       month:`<input id="startInput" type="month" class="form-control form-control-sm w-150">
-             <span>~</span>
-             <input id="endInput" type="month" class="form-control form-control-sm w-150">`,
+                   <span>~</span>
+                   <input id="endInput" type="month" class="form-control form-control-sm w-150">`,
+
       year:`<input id="startInput" type="number" class="form-control form-control-sm w-120" placeholder="연도">
-            <span>~</span>
-            <input id="endInput" type="number" class="form-control form-control-sm w-120" placeholder="연도">`
+                  <span>~</span>
+                  <input id="endInput" type="number" class="form-control form-control-sm w-120" placeholder="연도">`
     };
     box.html(tpl[type]);
   }
@@ -251,17 +257,17 @@
     updatePeriodInputs($(this).attr("id"));
   });
 
-
-
+  /* -----------------------------
+   * 메인차트
+   * ----------------------------- */
   let mainChart;
-
   function createMainChart(labels, values){
     const ctx = $("#mainChart")[0].getContext("2d");
     if(mainChart) mainChart.destroy();
 
     mainChart = new Chart(ctx,{
-      type:"line",
-      data:{
+      type: "line",
+      data: {
         labels,
         datasets:[{
           label:"매출액",
@@ -281,7 +287,9 @@
     });
   }
 
-
+  /* -----------------------------
+   * KPI
+   * ----------------------------- */
   function loadKPI(type, start, end){
     fetchUtil(`/store/KPI?type=${type}&startDate=${start}&endDate=${end}`, data => {
       $("#kpi-totalSales").text(data.totalSales.toLocaleString());
@@ -291,9 +299,25 @@
     });
   }
 
+  $("#getSalesBtn").on("click", function(){
+    const type = $("input[name='period']:checked").attr("id");
+    const start = $("#startInput").val();
+    const end = $("#endInput").val();
 
+    if(!start || !end){
+      alert("조회기간을 입력하세요.");
+      return;
+    }
+
+    loadTrend(type, start, end);
+    loadKPI(type, start, end);
+    loadMenuRatio(start, end);   /* ← 추가됨 */
+  });
+
+  /* -----------------------------
+   * TOP5 그래프
+   * ----------------------------- */
   let top5Chart;
-
   function loadTop5(){
     fetchUtil("/totalStoreSales", data => {
       const labels = data.map(x=>x.storeName);
@@ -317,10 +341,13 @@
     });
   }
 
+  /* -----------------------------
+   * 메뉴 비중 (직영점용)
+   * ----------------------------- */
   let menuChart;
 
-  function loadMenuRatio(){
-    fetchUtil("/menuRatio", data => {
+  function loadMenuRatio(start, end){
+    fetchUtil(`/store/menuRatio?startDate=${start}&endDate=${end}`, data => {
 
       data.sort((a,b)=>b.salesAmount - a.salesAmount);
 
@@ -331,7 +358,7 @@
       const labels = top5.map(x=>x.menuName);
       const values = top5.map(x=>x.salesAmount);
 
-      if(etcTotal>0){
+      if(etcTotal > 0){
         labels.push("기타");
         values.push(etcTotal);
       }
@@ -370,16 +397,18 @@
     });
   }
 
+  /* -----------------------------
+   * 리스트
+   * ----------------------------- */
   let listCurrentPage = 1;
 
   function loadList(page){
     listCurrentPage = page;
 
     let start = $("#list-start").val();
-    let end   = $("#list-end").val();
-    const salesDate = $("#list-salesDate").val();
+    let end = $("#list-end").val();
+    const salesDate = $("#list-salesDate")?.val();
 
-    // default: 이번 달 1일 ~ 어제
     if(!start || !end){
       const today = new Date();
       const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -390,13 +419,13 @@
               `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 
       start = toDate(monthStart);
-      end   = toDate(yesterday);
+      end = toDate(yesterday);
 
       $("#list-start").val(start);
       $("#list-end").val(end);
     }
 
-    fetchUtil(`/store/salesList?startDate=${start}&endDate=${end}&salesDate=${salesDate}&page=${page}`, data => {
+    fetchUtil(`/store/salesList?startDate=${start}&endDate=${end}&page=${page}`, data => {
       renderList(data.list);
       updatePaginationUI(data.currentPage, data.totalPages);
     });
@@ -411,35 +440,36 @@
       return;
     }
 
-    list.forEach((item, index) => {
+    list.forEach((item, index)=>{
       const rowNo = (listCurrentPage - 1) * 10 + (index + 1);
 
       tbody.append(`
-        <tr class="text-center">
-          <td>${rowNo}</td>
-          <td>${item.orderCount.toLocaleString()}</td>
-          <td>${item.salesAmount.toLocaleString()}</td>
-          <td>${item.salesDate}</td>
-          <td>
-            <img src="/image/detail.png" class="detailBtn"
-                data-store-no="${item.storeNo}"
-                data-sales-date="${item.salesDate}">
-          </td>
-        </tr>
-      `);
+                <tr class="text-center">
+                    <td>${rowNo}</td>
+                    <td>${item.orderCount.toLocaleString()}</td>
+                    <td>${item.salesAmount.toLocaleString()}</td>
+                    <td>${item.salesDate}</td>
+                    <td>
+                        <img src="/image/detail.png" class="detailBtn"
+                             data-store-no="${item.storeNo}"
+                             data-sales-date="${item.salesDate}">
+                    </td>
+                </tr>
+            `);
     });
   }
 
-  $("#list-searchBtn").on("click", () => loadList(1));
+  $("#list-searchBtn").on("click", ()=>loadList(1));
 
   $(document).on("click", ".detailBtn", function(){
     const storeNo = $(this).data("store-no");
-    const date    = $(this).data("sales-date");
+    const date = $(this).data("sales-date");
     location.href = `/salesDetailUI?storeNo=${storeNo}&salesDate=${date}`;
   });
 
-
-
+  /* -----------------------------
+   * 초기 로딩 (디폴트 기간 계산 포함)
+   * ----------------------------- */
   $(document).ready(function(){
 
     showChart();
@@ -447,7 +477,6 @@
     updatePeriodInputs("day");
 
     const today = new Date();
-
     let startObj, endObj;
 
     if (today.getDate() === 1) {
@@ -475,7 +504,7 @@
     loadTrend("day", s, e);
     loadKPI("day", s, e);
     loadTop5();
-    loadMenuRatio();
+    loadMenuRatio(s, e);
 
     $("#list-start").val(s);
     $("#list-end").val(e);

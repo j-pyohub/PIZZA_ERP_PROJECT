@@ -81,7 +81,11 @@ public class SalesRestController {
     }
 
     @GetMapping("/menuRatio")
-    public List<MenuRatioDTO> getMenuRatio() {
-        return salesChartService.getMenuRatio();
+    public List<MenuRatioDTO> getMenuRatio(
+            @RequestParam String startDate,
+            @RequestParam String endDate,
+            @RequestParam(required = false) Long storeNo
+    ){
+        return salesChartService.getMenuRatio(startDate, endDate, storeNo);
     }
 }

@@ -1,7 +1,6 @@
 package com.erp.service;
 
 import com.erp.dto.SalesListDTO;
-import com.erp.dto.StoreDailyMenuSalesDTO;
 import com.erp.dto.StoreMenuSalesSummaryDTO;
 import com.erp.repository.StoreOrderDetailRepository;
 import com.erp.repository.StoreSalesRepository;
@@ -102,7 +101,7 @@ public class SalesListService {
 
             if (!prevList.isEmpty()) {
                 int prevAmount = prevList.get(0).getSalesPrice();
-                int todayAmount = dto.getSalesAmount();
+                Long todayAmount = dto.getSalesAmount();
 
                 if (prevAmount > 0) {
                     double rate = ((double)(todayAmount - prevAmount) / prevAmount) * 100;

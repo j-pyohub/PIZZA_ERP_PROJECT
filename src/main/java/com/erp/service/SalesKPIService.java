@@ -35,7 +35,7 @@ public class SalesKPIService {
         LocalDate startDate = convert(type, start, false);
         LocalDate endDate   = convert(type, end, true);
 
-        int totalSales = sumStoreSales(storeNo, startDate, endDate);
+        long  totalSales = sumStoreSales(storeNo, startDate, endDate);
 
         LocalDateTime startDt = startDate.atStartOfDay();
         LocalDateTime endDt   = endDate.atTime(23, 59, 59);
@@ -43,7 +43,7 @@ public class SalesKPIService {
         Integer totalMenuCount = salesOrderRepository.getStoreMenuCount(storeNo, startDt, endDt);
         if (totalMenuCount == null) totalMenuCount = 0;
 
-        int avgPrice = (totalMenuCount == 0) ? 0 : (totalSales / totalMenuCount);
+        long  avgPrice = (totalMenuCount == 0) ? 0 : (totalSales / totalMenuCount);
         double growthRate = calcStoreWeeklyGrowth(storeNo);
 
         return KPIDTO.builder()
@@ -63,7 +63,7 @@ public class SalesKPIService {
 
     private KPIDTO getOfficeKPI(String type, LocalDate startDate, LocalDate endDate) {
 
-        int totalSales = sumSales(startDate, endDate);
+        Long totalSales = sumSales(startDate, endDate);
 
         LocalDateTime startDt = startDate.atStartOfDay();
         LocalDateTime endDt   = endDate.atTime(23, 59, 59);
@@ -90,19 +90,19 @@ public class SalesKPIService {
         LocalDate thisStart = today.with(java.time.DayOfWeek.MONDAY);
         LocalDate thisEnd   = today.with(java.time.DayOfWeek.SUNDAY);
 
-        int curr = sumStoreSales(storeNo, thisStart, thisEnd);
+        Long curr = sumStoreSales(storeNo, thisStart, thisEnd);
 
         LocalDate lastStart = thisStart.minusWeeks(1);
         LocalDate lastEnd   = thisEnd.minusWeeks(1);
 
-        int prev = sumStoreSales(storeNo, lastStart, lastEnd);
+        Long prev = sumStoreSales(storeNo, lastStart, lastEnd);
 
         if (prev == 0) return 0.0;
 
         return ((double)(curr - prev) / prev) * 100.0;
     }
 
-    private int sumStoreSales(Long storeNo, LocalDate start, LocalDate end) {
+    private long  sumStoreSales(Long storeNo, LocalDate start, LocalDate end) {
         return storeSalesRepository
                 .findByStore_StoreNoAndSalesDateBetween(storeNo, start, end)
                 .stream()
@@ -116,12 +116,12 @@ public class SalesKPIService {
         LocalDate thisStart = today.with(java.time.DayOfWeek.MONDAY);
         LocalDate thisEnd   = today.with(java.time.DayOfWeek.SUNDAY);
 
-        int curr = sumSales(thisStart, thisEnd);
+        Long curr = sumSales(thisStart, thisEnd);
 
         LocalDate lastStart = thisStart.minusWeeks(1);
         LocalDate lastEnd   = thisEnd.minusWeeks(1);
 
-        int prev = sumSales(lastStart, lastEnd);
+        Long prev = sumSales(lastStart, lastEnd);
 
         if (prev == 0) return 0.0;
 
@@ -129,11 +129,11 @@ public class SalesKPIService {
     }
 
 
-    private int sumSales(LocalDate start, LocalDate end) {
+    private Long sumSales(LocalDate start, LocalDate end) {
         return storeSalesRepository
                 .findBySalesDateBetween(start, end)
                 .stream()
-                .mapToInt(StoreSales::getSalesPrice)
+                .mapToLong(StoreSales::getSalesPrice)
                 .sum();
     }
 

@@ -15,7 +15,7 @@ import java.util.List;
 public class PrincipalDetails implements UserDetails {
 
     private final ManagerDTO manager;
-    private StoreDTO store;   // ★ 매장 정보 전체 저장
+    private StoreDTO store;
 
     public ManagerDTO getManager() { return manager; }
 

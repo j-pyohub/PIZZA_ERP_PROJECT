@@ -22,6 +22,12 @@ public class SalesOrderRepositoryTest {
     @Autowired
     StoreOrderDetailRepository storeOrderDetailRepository;
 
+    @Test
+    void findDailyMenuSalesTest(){
+        System.out.println(storeOrderDetailRepository.findDailyMenuSales(LocalDateTime.of(2025,11,01,0,0),LocalDateTime.of(2025,12,30,23,59)));
+
+    }
+
 //    @Test
 //    void getTotalMenuCountTest(){
 //        LocalDate start = LocalDate.of(2025, 12, 2);

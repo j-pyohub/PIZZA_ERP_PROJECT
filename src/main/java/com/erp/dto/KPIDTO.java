@@ -8,9 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 public class KPIDTO {
-    private Integer totalSales;
-    private Integer totalMenuCount;
-    private Integer avgStoreSales;
-    private Integer avgOrderAmount;
+    private long  totalSales;
+    private long  totalMenuCount;
+    private long  avgStoreSales;
+    private long  avgOrderAmount;
     private Double growthRate;
 }

@@ -11,6 +11,7 @@ public class StoreDailyMenuSalesDTO {
     private String menuCategory;
     private String menuName;
     private String size;
-    private Integer menuCount;
-    private Integer totalPrice;
+    private Long menuCount;
+    private Long totalPrice;
+
 }

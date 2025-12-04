@@ -11,10 +11,10 @@ public class SalesChartServiceTest {
     @Autowired
     private SalesChartService salesChartService;
 
-    @Test
-    void getMenuRatio() {
-        System.out.println(salesChartService.getMenuRatio());
-    }
+//    @Test
+//    void getMenuRatio() {
+//        System.out.println(salesChartService.getMenuRatio());
+//    }
 
     @Test
     void getTotalStoreSalesTest(){

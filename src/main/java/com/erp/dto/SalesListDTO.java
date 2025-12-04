@@ -15,7 +15,7 @@ public class SalesListDTO {
     private String storeName;
     private String address;
     private Long orderCount;
-    private int salesAmount;
+    private Long salesAmount;
     private LocalDate salesDate;
     private String growthRate;
 

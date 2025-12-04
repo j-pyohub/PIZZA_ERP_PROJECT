@@ -44,7 +44,7 @@ public class SalesChartService {
         List<StoreSales> list = storeSalesRepository
                 .findByStore_StoreNoAndSalesDateBetween(storeNo, startDate, endDate);
 
-        Map<String, Integer> grouped;
+        Map<String, Long> grouped;
 
         switch (type) {
             case "day":
@@ -68,7 +68,7 @@ public class SalesChartService {
                 .sorted()
                 .toList();
 
-        List<Integer> values = labels.stream()
+        List<Long> values = labels.stream()
                 .map(grouped::get)
                 .toList();
 
@@ -80,34 +80,31 @@ public class SalesChartService {
 
 
 
-    public List<MenuRatioDTO> getMenuRatio() {
+    public List<MenuRatioDTO> getMenuRatio(String startDate,
+                                           String endDate,
+                                           Long storeNo) {
 
-        // 최근 30일 구간
-        LocalDate end = LocalDate.now();
-        LocalDate start = end.minusDays(30);
+        LocalDateTime startDt = LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime endDt   = LocalDate.parse(endDate).atTime(23, 59, 59);
 
-        LocalDateTime startDate = start.atStartOfDay();
-        LocalDateTime endDate   = end.atTime(23, 59, 59);
-        // LocalDate 거치는 방법말고 바로 LocalDateTime 가능은 하다
-        // 그렇게 하려면 UI에서 들어온거 연 월 일 분해해서 넣는 과정필요 더 복잡
+        List<StoreDailyMenuSalesDTO> list;
 
-
-        List<StoreDailyMenuSalesDTO> list =   storeOrderDetailRepository.findDailyMenuSales(startDate, endDate);
-
-        // 메뉴별 매출 합계 계산
-        Map<String, Integer> grouped = new HashMap<>();
-
-        for (StoreDailyMenuSalesDTO dto : list) {
-            String menuName = dto.getMenuName();
-            int amount = dto.getTotalPrice();
-
-            grouped.put(menuName, grouped.getOrDefault(menuName, 0) + amount);
+        if(storeNo == null){
+            list = storeOrderDetailRepository.findDailyMenuSales(startDt, endDt);
+        } else {
+            list = storeOrderDetailRepository.findDailyMenuSalesByStore(storeNo, startDt, endDt);
         }
 
-        // Map → DTO 리스트 변환
+        Map<String, Long> grouped = new HashMap<>();
+
+        for (StoreDailyMenuSalesDTO dto : list) {
+            grouped.put(dto.getMenuName(),
+                    grouped.getOrDefault(dto.getMenuName(), 0L) + dto.getTotalPrice());
+        }
+
         return grouped.entrySet().stream()
                 .map(e -> new MenuRatioDTO(e.getKey(), e.getValue()))
-                .sorted((a, b) -> b.getSalesAmount() - a.getSalesAmount()) // 매출 내림차순
+                .sorted((a, b) -> Long.compare(b.getSalesAmount(), a.getSalesAmount()))
                 .toList();
     }
 
@@ -119,15 +116,15 @@ public class SalesChartService {
 
         List<StoreSales> salesList = storeSalesRepository.findBySalesDateBetween(startDate, endDate);
 
-        Map<String, Integer> grouped =
+        Map<String, Long> grouped =
                 salesList.stream()
                         .collect(Collectors.groupingBy(
                                 s -> s.getStore().getStoreName(),
-                                Collectors.summingInt(StoreSales::getSalesPrice)
+                                Collectors.summingLong(StoreSales::getSalesPrice)
                         ));
 
         return grouped.entrySet().stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .limit(5)
                 .map(e -> new TotalStoreSalesDTO(e.getKey(), e.getValue()))
                 .toList();
@@ -137,7 +134,7 @@ public class SalesChartService {
 
         List<StoreSales> list = storeSalesRepository.findBySalesDateBetween(startDate, endDate);
 
-        Map<String, Integer> grouped;
+        Map<String, Long> grouped;
 
         switch (type) {
             case "day":
@@ -159,7 +156,7 @@ public class SalesChartService {
                 .stream()
                 .sorted()
                 .toList();
-        List<Integer> values = labels.stream()
+        List<Long> values = labels.stream()
                 .map(grouped::get)
                 .toList();
 
@@ -211,14 +208,14 @@ public class SalesChartService {
 
 
 
-    private Map<String, Integer> groupByDay(List<StoreSales> list) {
+    private Map<String, Long> groupByDay(List<StoreSales> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(
                         s -> s.getSalesDate().toString(),  // yyyy-MM-dd
-                        Collectors.summingInt(StoreSales::getSalesPrice)
+                        Collectors.summingLong(StoreSales::getSalesPrice)
                 ));
     }
-    private Map<String, Integer> groupByWeek(List<StoreSales> list) {
+    private Map<String, Long> groupByWeek(List<StoreSales> list) {
         WeekFields wf = WeekFields.ISO;
         return list.stream()
                 .collect(Collectors.groupingBy(
@@ -228,23 +225,23 @@ public class SalesChartService {
                             int week = d.get(wf.weekOfYear());
                             return year + "-W" + week;   // 예: 2025-W7
                         },
-                        Collectors.summingInt(StoreSales::getSalesPrice)
+                        Collectors.summingLong(StoreSales::getSalesPrice)
                 ));
     }
 
-    private Map<String, Integer> groupByMonth(List<StoreSales> list) {
+    private Map<String, Long> groupByMonth(List<StoreSales> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(
                         s -> YearMonth.from(s.getSalesDate()).toString(),  // 2025-01
-                        Collectors.summingInt(StoreSales::getSalesPrice)
+                        Collectors.summingLong(StoreSales::getSalesPrice)
                 ));
     }
 
-    private Map<String, Integer> groupByYear(List<StoreSales> list) {
+    private Map<String, Long> groupByYear(List<StoreSales> list) {
         return list.stream()
                 .collect(Collectors.groupingBy(
                         s -> String.valueOf(s.getSalesDate().getYear()),   // 2025
-                        Collectors.summingInt(StoreSales::getSalesPrice)
+                        Collectors.summingLong(StoreSales::getSalesPrice)
                 ));
     }
 

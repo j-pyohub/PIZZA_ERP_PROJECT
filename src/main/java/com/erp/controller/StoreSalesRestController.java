@@ -1,10 +1,7 @@
 package com.erp.controller;
 
 import com.erp.auth.PrincipalDetails;
-import com.erp.dto.KPIDTO;
-import com.erp.dto.SalesChartDTO;
-import com.erp.dto.SalesListDTO;
-import com.erp.dto.StoreDailyMenuSalesDTO;
+import com.erp.dto.*;
 import com.erp.service.SalesChartService;
 import com.erp.service.SalesKPIService;
 import com.erp.service.SalesListService;
@@ -19,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -28,6 +26,17 @@ public class StoreSalesRestController {
     private final SalesChartService salesChartService;
     private final SalesKPIService salesKPIService;
     private final SalesListService salesListService;
+
+    @GetMapping("/store/menuRatio")
+    public List<MenuRatioDTO> getMenuRatio(
+            @AuthenticationPrincipal PrincipalDetails principal,
+            @RequestParam String startDate,
+            @RequestParam String endDate
+    ){
+        Long storeNo = principal.getStore().getStoreNo();
+
+        return salesChartService.getMenuRatio(startDate, endDate, storeNo);
+    }
 
     @GetMapping("/store/salesList")
     public Map<String, Object> getSalesListForStore(

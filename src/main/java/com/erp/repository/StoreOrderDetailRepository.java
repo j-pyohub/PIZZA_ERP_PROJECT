@@ -5,9 +5,9 @@ import com.erp.dto.StoreDailyMenuSalesDTO;
 import com.erp.dto.StoreMenuSalesSummaryDTO;
 import com.erp.repository.entity.SalesOrder;
 import com.erp.repository.entity.StoreOrderDetail;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 
 import java.time.LocalDateTime;
@@ -28,47 +28,51 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
     SalesOrderDTO countSalesOrder(@Param("salesOrderNo") Long salesOrderNo);
 
     @Query("""
-        select new com.erp.dto.StoreDailyMenuSalesDTO(
-            so.store.storeName,
-            m.menuCategory,
-            m.menuName,
-            m.size,
-            sod.menuCount,
-            (sod.menuPrice * sod.menuCount)
-        )
-        from SalesOrder so
-            join so.orderDetails sod
-            join sod.storeMenu sm
-            join sm.menu m
-        where so.salesOrderDatetime >= :startDate
-          and so.salesOrderDatetime < :endDate
-        order by so.store.storeName asc,
-                 (sod.menuPrice * sod.menuCount) desc
-        """)
-    List<StoreDailyMenuSalesDTO> findDailyMenuSales(@Param("startDate") LocalDateTime startDate, @Param("endDate")  LocalDateTime endDate);
+select new com.erp.dto.StoreDailyMenuSalesDTO(
+    so.store.storeName,
+    m.menuCategory,
+    m.menuName,
+    m.size,
+    CAST(sod.menuCount AS long),
+    CAST((sod.menuPrice * sod.menuCount) AS long)
+)
+from SalesOrder so
+    join so.orderDetails sod
+    join sod.storeMenu sm
+    join sm.menu m
+where so.store.storeNo = :storeNo
+  and so.salesOrderDatetime >= :start
+  and so.salesOrderDatetime < :end
+order by CAST((sod.menuPrice * sod.menuCount) AS long) desc
+""")
+    List<StoreDailyMenuSalesDTO> findDailyMenuSalesByStore(
+            @Param("storeNo") Long storeNo,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 
     @Query("""
-    select new com.erp.dto.StoreDailyMenuSalesDTO(
-        so.store.storeName,
-        m.menuCategory,
-        m.menuName,
-        m.size,
-        sod.menuCount,
-        (sod.menuPrice * sod.menuCount)
-    )
-    from SalesOrder so
-        join so.orderDetails sod
-        join sod.storeMenu sm
-        join sm.menu m
-    where so.store.storeNo = :storeNo       
-      and so.salesOrderDatetime >= :start
-      and so.salesOrderDatetime < :end
-    order by (sod.menuPrice * sod.menuCount) desc
-    """)
-    List<StoreDailyMenuSalesDTO> findDailyMenuSalesByStore(@Param("storeNo") Long storeNo,
-                                                           @Param("start") LocalDateTime start,
-                                                           @Param("end") LocalDateTime end
-    );
+select new com.erp.dto.StoreDailyMenuSalesDTO(
+    so.store.storeName,
+    m.menuCategory,
+    m.menuName,
+    m.size,
+    CAST(sod.menuCount AS long),
+    CAST((sod.menuPrice * sod.menuCount) AS long)
+)
+from SalesOrder so
+    join so.orderDetails sod
+    join sod.storeMenu sm
+    join sm.menu m
+where so.salesOrderDatetime >= :startDate
+  and so.salesOrderDatetime < :endDate
+order by CAST((sod.menuPrice * sod.menuCount) AS long) desc
+""")
+    List<StoreDailyMenuSalesDTO> findDailyMenuSales(
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate);
+
+
+
 
     @Query("""
         select d
@@ -90,8 +94,8 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
         m.menuCategory,
         m.menuName,
         m.size,
-        SUM(sod.menuCount),
-        SUM(sod.menuPrice * sod.menuCount)
+        CAST(SUM(sod.menuCount) AS long),
+        CAST(SUM(sod.menuPrice * sod.menuCount) AS long)
     )
     from SalesOrder so
         join so.orderDetails sod
@@ -101,8 +105,8 @@ public interface StoreOrderDetailRepository extends JpaRepository<StoreOrderDeta
       and so.salesOrderDatetime >= :start
       and so.salesOrderDatetime < :end
     group by so.store.storeName, m.menuCategory, m.menuName, m.size
-    order by SUM(sod.menuPrice * sod.menuCount) desc
-    """)
+    order by CAST(SUM(sod.menuPrice * sod.menuCount) AS long) desc
+""")
     List<StoreMenuSalesSummaryDTO> findDailyMenuSummary(
             @Param("storeNo") Long storeNo,
             @Param("start") LocalDateTime start,
