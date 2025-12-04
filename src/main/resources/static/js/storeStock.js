@@ -33,10 +33,11 @@
   <td>${r.changeReason || ''}</td>
   ${qtyHtml}
   <td class="text-end">${Number(r.currentQuantity||0).toLocaleString()} ${unit}</td>
-  <td>${r.disposalReason || '-'}</td>
+  <td class="reason-cell">${r.disposalReason || '-'}</td>
 </tr>`);
         });
     }
+
 
     // 페이저
     function renderPager(resp, onGo) {
