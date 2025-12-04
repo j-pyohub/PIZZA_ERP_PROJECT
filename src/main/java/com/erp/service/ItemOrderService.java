@@ -116,7 +116,7 @@ public class ItemOrderService {
                 StoreStock.builder()
                         .storeItemNo(storeItem.getStoreItemNo())
                         .changeDatetime(new Timestamp(System.currentTimeMillis()))
-                        .changeQuantity(orderDetail.getOrderDetailQuantity())
+                        .changeQuantity(orderDetail.getOrderDetailQuantity() * orderDetail.getItemNo().getConvertStock())
                         .changeReason("입고")
                         .currentQuantity(currentQuantity + (orderDetail.getOrderDetailQuantity() * orderDetail.getItemNo().getConvertStock()))
                         .build()

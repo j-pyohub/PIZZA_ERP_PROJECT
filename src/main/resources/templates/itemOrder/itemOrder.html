@@ -549,9 +549,9 @@
                            <td>${item.itemCode}</td>
                            <td>${item.itemName}</td>
                            <td>${item.itemCategory}</td>
-                           <td>${item.storeLimit == null ? "-" : item.storeLimit}</td>
-                           <td class="text-danger fw-semibold" data-convert_stock="${item.convertStock}">${item.itemQuantity == null ? "0" : item.itemQuantity}</td>
-                           <td>${item.supplyUnit}</td>
+                           <td>${item.storeLimit == null ? (item.managerLimit == null ? "-" : item.managerLimit) : item.storeLimit}</td>
+                           <td class="text-danger fw-semibold" data-convert_stock="${item.convertStock}">${item.itemQuantity == null ? "0" : item.itemQuantity} ${item.stockUnit}</td>
+                           <td>${item.supplyUnit}(${item.convertStock} ${item.stockUnit})</td>
                            <td data-price="${item.itemPrice}">${(item.itemPrice).toLocaleString()}</td>
                            <td class="text-center">
                            <button class="btn btn-warning btn-sm add_btn">담기</button>
