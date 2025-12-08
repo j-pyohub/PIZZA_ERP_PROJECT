@@ -21,7 +21,6 @@
             max-width: 1500px;
         }
 
-        /* 커스텀 버튼 색상 (Bootstrap으로 대체 불가능한 브랜드 색상) */
         .custom-btn {
             background-color: #FFEEAA !important;
             border-color: #FFEEAA !important;
@@ -43,7 +42,6 @@
             border-color: #ffffff !important;
         }
 
-        /* 이미지 크기 (Bootstrap으로 정확한 크기 지정 불가능) */
         .detail-img {
             width: 220px;
             height: 160px;
@@ -56,7 +54,6 @@
 <header th:replace="fragments/toolBar :: toolBar"></header>
 <div class="container custom-container mt-5 my-5">
     <div class="bg-white border rounded p-5">
-        <!-- 제목 -->
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold">메뉴 상세보기</h2>
             <div class="d-flex gap-2">
@@ -70,7 +67,6 @@
             </div>
         </div>
 
-        <!-- 기본 정보 -->
         <div class="bg-white rounded p-4 shadow-sm mb-4">
             <h5 class="fw-bold mb-3">기본 정보</h5>
             <div class="row g-3">
@@ -91,8 +87,6 @@
                     <div class="border rounded px-3 py-2 bg-light" th:text="${menu.menuName}"></div>
                 </div>
 
-
-                <!-- 사이즈 여부 -->
                 <div class="col-md-4">
                     <label class="form-label fw-semibold d-block">사이즈</label>
                     <div class="form-check form-check-inline">
@@ -104,7 +98,6 @@
                         <label class="form-check-label">무</label>
                     </div>
                 </div>
-                <!-- 가격 -->
                 <div class="col-md-4" th:if="${hasSize}"
                      th:each="s : ${sizeList}">
                     <label class="form-label fw-semibold"
@@ -112,7 +105,6 @@
                     <div class="border rounded px-3 py-2 bg-light" th:text="${s.menuPrice}"></div>
                 </div>
 
-                <!-- 단일 메뉴 가격 -->
                 <div class="col-md-4" th:if="${!hasSize}">
                     <label class="form-label fw-semibold">판매 가격</label>
                     <div class="border rounded px-3 py-2 bg-light" th:text="${menu.menuPrice}"></div>
@@ -133,7 +125,6 @@
             </div>
 
 
-            <!-- 레시피 정보 -->
             <div class="mt-4">
                 <h5 class="fw-bold mb-3">레시피 정보</h5>
                 <table class="table text-center align-middle" th:if="${hasSize}">
@@ -151,15 +142,12 @@
                         <td th:text="${ing.ingredientName}"></td>
                         <td th:text="${ing.stockUnit}"></td>
 
-                        <!-- L 정량 -->
                         <td th:text="${ing.quantityLarge}"></td>
 
-                        <!-- M 정량 -->
                         <td th:text="${ing.quantityMedium}"></td>
                     </tr>
                     </tbody>
                 </table>
-                <!-- 단일 메뉴일 때 테이블 -->
                 <table class="table text-center align-middle" th:if="${!hasSize}">
                     <thead class="table-light">
                     <tr>
