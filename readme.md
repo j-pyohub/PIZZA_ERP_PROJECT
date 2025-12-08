@@ -51,7 +51,6 @@ feature/*  →  develop  →  main
 ✔ 형식
 type: description
 
-
 영어
 
 명령형(add, fix, update…)
@@ -69,11 +68,19 @@ type: description
 | wip      | 작업중    | 미완성 기능 임시 커밋                | wip implement stock movement      |
 | merge      | 작업중    | 브랜치 병합 커밋                | merge feature/item into main      |
 
+
 📦 4. 팀 운영 규칙 요약
+
 ✔ main에는 직접 커밋하지 않는다.
+
 ✔ feature는 기능 단위로 생성한다.
-✔ UI~Service~Repository 포함 전체 세트를 feature에서 개발한다.
+
+✔ UI-Service-Repository 포함 전체 세트를 feature에서 개발한다.
+
 ✔ feature → develop merge 후 feature는 삭제한다.
+
 ✔ main은 오직 배포 시점에만 update된다.
+
 ✔ 커밋 메시지는 규칙대로 작성한다.
+
 ✔ PR은 가능한 작고 명확한 단위로 올린다.
