@@ -56,7 +56,11 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-
+        .detailStoreBtn {
+            border: none;
+            background-color: transparent;
+            padding: 0;
+        }
         /* 내용 영역 */
         .content-section {
             display: none;
@@ -65,15 +69,19 @@
         .content-section.active {
             display: block;
         }
+
+
+
+
     </style>
 </head>
 
-<body class="p-4">
+<body >
 
 <!-- 상단 툴바 -->
 <div th:replace="~{fragments/toolBar :: toolBar}"></div>
 
-<div class="page-wrap mt-4">
+<div class="page-wrap mt-4 p-4">
     <div>
         <h3 class="fw-bold mb-4">직원 목록</h3>
     </div>
