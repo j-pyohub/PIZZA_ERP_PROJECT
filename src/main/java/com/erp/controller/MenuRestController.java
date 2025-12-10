@@ -18,7 +18,7 @@ public class MenuRestController {
     private final MenuService menuService;
     private final ItemService itemService;
 
-    @GetMapping("/setMenu")
+    @PostMapping("/setMenu")
     public ResponseEntity<Map<String, String>> setMenu(@RequestBody MenuDTO menuDTO) {
         menuService.updateMenu(menuDTO);
         return ResponseEntity.ok(Map.of("message", "success"));
