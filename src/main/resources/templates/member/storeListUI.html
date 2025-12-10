@@ -6,6 +6,7 @@
 
     <!-- Bootstrap + jQuery -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/js/util.js"></script>
@@ -73,9 +74,9 @@
         <label class="fw-semibold me-2">운영 상태</label>
         <select id="storeStatus" class="form-select d-inline-block">
           <option value="all">전체</option>
-          <option value="opened">영업중</option>
-          <option value="pre-opened">오픈준비</option>
-          <option value="closed">폐업</option>
+          <option value="영업중">영업중</option>
+          <option value="오픈준비">오픈준비</option>
+          <option value="폐업">폐업</option>
         </select>
       </div>
 
@@ -84,7 +85,7 @@
         <select id="searchType" class="form-select d-inline-block">
           <option value="all">전체</option>
           <option value="region">지역</option>
-          <option value="name">직영점명</option>
+          <option value="storename">직영점명</option>
           <option value="manager">점장명</option>
         </select>
       </div>
@@ -261,26 +262,32 @@
     </div>
 </div>
 <script>
-    const storeTable = $("storeList")
+    const storeTable = $("#storeList")
 
-    function loadPage(pageNo) {
-        const storeName = $("#storeName").val();
-        const address = $("#address").val();
-        const managerName = $("#managerName").val();
+    function loadPage(pageNo = 0) {
         const storeStatus = $("#storeStatus").val();
+        const searchType = $("#searchType").val();
+        const keyword = $("#searchKeyword").val();
 
         const params = new URLSearchParams();
-        if(storeName) params.append("storeName", storeName);
-        if(address) params.append("address", address);
-        if(managerName) params.append("managerName", managerName);
-        if(storeStatus) params.append("storeStatus", storeStatus);
+        params.append("page", pageNo);
+
+        if (storeStatus !== "all") {
+            params.append("storeStatus", storeStatus);
+        }
+
+        if (searchType !== "all" && keyword) {
+            if (searchType === "region") params.append("address", keyword);
+            if (searchType === "storename") params.append("storeName", keyword);
+            if (searchType === "manager") params.append("managerName", keyword);
+        }
 
         fetchUtil(`/getStoreList?${params.toString()}`, data => {
-
             renderStoreList(data.content);
             updatePaginationUI(pageNo + 1, data.totalPages);
         });
     }
+
 
     function renderStoreList(data) {
         const tbody = storeTable.find("tbody");
@@ -309,7 +316,7 @@
         })
     }
     $(window).on("load", function () {
-        loadPage(1);
+        loadPage(0);
     });
 
     function openStoreDetail(no) {
@@ -330,9 +337,8 @@
     }
 
     $(document).ready(function () {
-        /* 검색 버튼 클릭해도 아무 기능 없음 */
         $("#searchBtn").on("click", function () {
-            alert("검색 기능은 아직 구현되지 않았습니다.");
+            loadPage(0);
         });
 
         $("#storeTable").on("click", ".open-detail", function () {
