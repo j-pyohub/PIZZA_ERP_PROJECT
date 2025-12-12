@@ -25,7 +25,6 @@ public class MemberRestController {
 
     @PostMapping("/manager")
     public ResponseEntity<Map<String, String>> manager(@RequestBody AddStoreRequestDTO request, Model model) {
-        System.out.println(request.getManager());
         ManagerDTO manager = ManagerDTO.toDTO(request.getManager());
 
         memberService.addManager(manager);

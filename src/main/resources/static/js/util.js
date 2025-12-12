@@ -1,4 +1,4 @@
-function fetchUtil(url, action, method="GET", json=null){
+function  fetchUtil(url, action, method="GET", json=null){
     const options = {
         method: method
     };
@@ -16,9 +16,36 @@ function fetchUtil(url, action, method="GET", json=null){
     }
 
     fetch(url, options)
-    .then(data => data.json())
+    .then(async data => {
+        const json = await data.json();
+        json.status = data.status;
+        json.ok = data.ok;
+        return json;
+    })
     .then(action)
     .catch(err => console.error(err));
+}
+
+function showAlert(message, onConfirm, modal) {
+    let modalId = "#alertModal";
+    if(modal === "check")
+        modalId = "#alertModalConfirm";
+
+    $(modalId).find(".alertMessage").text(message);
+    $(modalId).find(".alert-confirm-btn").off("click").on("click", function () {
+        if (typeof onConfirm === "function") onConfirm();
+        $(modalId).modal("hide");
+    });
+    $(modalId).modal("show");
+
+    // $("#alertMessage").text(message);
+    // $(".alert-confirm-btn").off("click").on("click", function () {
+    //     if (typeof onConfirm === "function") onConfirm();
+    //     $(modalId).modal("hide");
+    // });
+}
+function isEmpty(value) {
+    return !value || value.trim() === "";
 }
 
 let currentPage = 1;
