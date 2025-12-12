@@ -39,23 +39,14 @@ SELECT DISTINCT new com.erp.dto.StoreItemDTO(
   si.storeLimit
 )
 FROM StoreItem si
-JOIN Store s ON s.storeNo = si.storeNo
-JOIN Item  i ON i.itemNo  = si.itemNo
+LEFT JOIN Store s ON s.storeNo = si.storeNo
+JOIN Item  i      ON i.itemNo  = si.itemNo       
 LEFT JOIN StoreStock ss ON ss.storeStockNo = (
   SELECT MAX(ss2.storeStockNo)
   FROM StoreStock ss2
   WHERE ss2.storeItemNo = si.storeItemNo
 )
-JOIN MenuIngredient mi ON mi.item.itemNo = i.itemNo
-JOIN mi.menu m
-JOIN StoreMenu sm
-  ON sm.menu = m
- AND sm.store.storeNo = :storeNo
- AND sm.salesStatus IN ('판매중','품절')
 WHERE si.storeNo = :storeNo
-  AND i.delDate IS NULL
-  AND m.releaseStatus = '출시 중'
-  AND m.delDate IS NULL
   AND (:category IS NULL OR i.itemCategory = :category)
   AND (
         :keyword IS NULL
@@ -67,17 +58,8 @@ ORDER BY i.itemCategory, i.itemName
             countQuery = """
 SELECT COUNT(DISTINCT si.storeItemNo)
 FROM StoreItem si
-JOIN Item  i ON i.itemNo  = si.itemNo
-JOIN MenuIngredient mi ON mi.item.itemNo = i.itemNo
-JOIN mi.menu m
-JOIN StoreMenu sm
-  ON sm.menu = m
- AND sm.store.storeNo = :storeNo
- AND sm.salesStatus IN ('판매중','품절')
+JOIN Item i ON i.itemNo = si.itemNo                 
 WHERE si.storeNo = :storeNo
-  AND i.delDate IS NULL
-  AND m.releaseStatus = '출시 중'
-  AND m.delDate IS NULL
   AND (:category IS NULL OR i.itemCategory = :category)
   AND (
         :keyword IS NULL
@@ -91,6 +73,4 @@ WHERE si.storeNo = :storeNo
                                         @Param("searchType") String searchType,
                                         @Param("keyword") String keyword,
                                         Pageable pageable);
-
-
 }
