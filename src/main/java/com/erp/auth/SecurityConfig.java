@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
                 .requestMatchers("/store/**").hasRole("STORE")
+                .requestMatchers("/test/addr").permitAll()
                 .anyRequest().authenticated());
 
 

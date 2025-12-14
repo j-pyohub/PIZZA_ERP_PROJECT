@@ -56,6 +56,7 @@ public class StoreService {
         manager.setRole("ROLE_STORE");
         manager.setPw(encoder.encode(manager.getPw()));
         store.setStoreManagerId(manager.getManagerId());
+
         try{
             managerDAO.addManager(manager);
         }

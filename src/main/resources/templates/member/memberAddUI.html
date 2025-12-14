@@ -145,7 +145,7 @@
             <div class="border p-4 rounded">
                 <div class="row mb-3">
                     <label class="col-2 fw-bold">아이디</label>
-                    <div class="col-6"><input type="text" class="form-control" id="storeId" data-is_avail="false"></div>
+                    <div class="col-3"><input type="text" class="form-control" id="storeId" data-is_avail="false"></div>
                     <div class="col-2">
                         <span id="storeIdEqual"></span>
                     </div>
@@ -156,7 +156,7 @@
 
                 <div class="row mb-3">
                     <label class="col-2 fw-bold">비밀번호</label>
-                    <div class="col-5 d-flex">
+                    <div class="col-3 d-flex">
                         <input type="password" class="form-control me-1" id="storePw" data-is_avail="false">
                         <input type="password" class="form-control" id="storePwConfirm">
                     </div>
@@ -170,23 +170,23 @@
 
                 <div class="row mb-3">
                     <label class="col-2 fw-bold">점장명</label>
-                    <div class="col-4"><input type="text" class="form-control" id="storeManagerName"></div>
+                    <div class="col-3"><input type="text" class="form-control" id="storeManagerName"></div>
 
                     <label class="col-2 fw-bold ms-4">이메일</label>
                     <div class="col-3"><input type="email" class="form-control" id="storeManagerEmail"></div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row mb-4">
                     <label class="col-2 fw-bold">점장 연락처</label>
-                    <div class="col-4"><input type="text" class="form-control" id="storeManagerPhone"></div>
+                    <div class="col-3"><input type="text" class="form-control" id="storeManagerPhone"></div>
 
                     <label class="col-2 fw-bold ms-4">직영점 주소</label>
-                    <div class="col-3"><input type="text" class="form-control" id="storeAddress"></div>
+                    <div class="col-3"><input type="text" class="form-control" id="storeAddress" readonly></div>
                 </div>
 
                 <div class="row mb-3">
                     <label class="col-2 fw-bold">직영점명</label>
-                    <div class="col-4"><input type="text" class="form-control" id="storeName"></div>
+                    <div class="col-3"><input type="text" class="form-control" id="storeName"></div>
 
                     <label class="col-2 fw-bold ms-4">영업상태</label>
                     <div class="col-2">
@@ -370,7 +370,7 @@
                 "store": {
                     "storeName": storeName,
                     "storeStatus" : status,
-                    "address":"test",
+                    "address": storeAddress,
                     "longitude":"test",
                     "latitude":"test",
                     "storePhoneNumber" : storePhone,
@@ -451,6 +451,30 @@
         }
 
         $("#managerIdConfirm").on("click", checkManagerId);
+
+
+
+
+        $(document).on("click", "#storeAddress", function(){
+            goPopup();
+        });
+
+        let addr = {};
+        function jusoCallback(data) {
+            addr = data;
+            console.log(addr);
+            $("#storeAddress").val(data.roadFullAddr);
+
+
+        }
+
+        function goPopup() {
+            window.open(
+                "/jusoPopup",
+                "jusoPopup",
+                "width=570,height=420,scrollbars=yes"
+            );
+        }
     </script>
 
 </body>

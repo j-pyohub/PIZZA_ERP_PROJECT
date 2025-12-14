@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+</head>
+<body>
+	<form method="post"
+		  action="https://business.juso.go.kr/addrlink/addrLinkUrl.do">
+		<input type="hidden" name="confmKey" th:value="${confmKey}">
+		<input type="hidden" name="returnUrl" th:value="${returnUrl}">
+		<input type="hidden" name="resultType" th:value="${resultType}">
+	</form>
+
+	<script>
+		document.forms[0].submit();
+	</script>
+</body>
+</html>

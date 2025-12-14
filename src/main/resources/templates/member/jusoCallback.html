@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<script th:inline="javascript">
+        const data = {
+            roadAddr: [[${roadAddr}]],
+            roadFullAddr: [[${roadFullAddr}]],
+            zipNo: [[${zipNo}]],
+            jibunAddr: [[${jibunAddr}]],
+            admCd: [[${admCd}]],
+            rnMgtSn: [[${rnMgtSn}]],
+            buldMnnm: [[${buldMnnm}]],
+            buldSlno: [[${buldSlno}]]
+        };
+
+        opener.jusoCallback(data);
+        window.close();
+	</script>
+</head>
+<body></body>
+</html>
