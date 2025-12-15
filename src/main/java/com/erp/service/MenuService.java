@@ -247,6 +247,11 @@ public class MenuService {
 
     @Transactional
     public void updateMenu(MenuDTO menuRequest) {
+        if (menuImage != null && !menuImage.isEmpty()) {
+            String imageUrl = s3Uploader.uploadMenuImage(menuImage, menuRequest.getMenuCode());
+            menuRequest.setMenuImage(imageUrl);
+        }
+
 
         List<MenuDTO> oldList = menuDAO.getMenuByMenuCode(menuRequest.getMenuCode());
         if (oldList == null || oldList.isEmpty()) {

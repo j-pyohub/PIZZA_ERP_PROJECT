@@ -26,11 +26,6 @@ public class MenuRestController {
         return ResponseEntity.ok(Map.of("message","delete Menu success"));
     }
 
-    @PostMapping("/setMenu")
-    public ResponseEntity<Map<String, String>> setMenu(@RequestBody MenuDTO menuDTO) {
-        menuService.updateMenu(menuDTO);
-        return ResponseEntity.ok(Map.of("message", "set Menu success"));
-    }
 
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDTO>> getMenuList(
@@ -39,6 +34,11 @@ public class MenuRestController {
     ) {
         List<MenuDTO> menuList = menuService.getMenuList(menuCategory, releaseStatus);
         return ResponseEntity.ok(menuList);
+    }
+    @PostMapping("/setMenu")
+    public ResponseEntity<Map<String, String>> setMenu(@RequestBody MenuDTO menuDTO) {
+        menuService.updateMenu(menuDTO);
+        return ResponseEntity.ok(Map.of("message", "set Menu success"));
     }
 
     @PostMapping(value = "/addMenu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
