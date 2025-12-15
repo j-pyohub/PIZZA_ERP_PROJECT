@@ -35,9 +35,10 @@ public class MenuRestController {
         List<MenuDTO> menuList = menuService.getMenuList(menuCategory, releaseStatus);
         return ResponseEntity.ok(menuList);
     }
-    @PostMapping("/setMenu")
-    public ResponseEntity<Map<String, String>> setMenu(@RequestBody MenuDTO menuDTO) {
-        menuService.updateMenu(menuDTO);
+    @PutMapping(value = "/setMenu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> setMenu(@RequestPart MenuDTO menuDTO,
+                                                       @RequestPart(value = "menuImage", required = false) MultipartFile menuImage) {
+        menuService.updateMenu(menuDTO,menuImage);
         return ResponseEntity.ok(Map.of("message", "set Menu success"));
     }
 
