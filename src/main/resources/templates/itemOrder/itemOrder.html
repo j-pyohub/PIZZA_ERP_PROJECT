@@ -585,7 +585,7 @@
 
         fetchUtil(`/itemOrder/itemOrder`, (data)=>{
             $(location).attr("href", "/itemOrder/itemOrderList");
-        }, "POST", JSON.stringify(list));
+        }, "POST", list);
 
     });
 
