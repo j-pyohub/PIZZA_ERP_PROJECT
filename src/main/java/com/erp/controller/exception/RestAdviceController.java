@@ -9,6 +9,16 @@ import java.util.Map;
 
 @RestControllerAdvice(assignableTypes = StoreItemRestController.class)
 public class RestAdviceController {
+
+    // 발주에 대한 예외 처리
+    @ExceptionHandler(ItemOrderException.class)
+    public ResponseEntity<ItemOrderException> handleItemOrderException(ItemOrderException e) {
+        ItemOrderErrorCode errCode = e.getErrorCode();
+        return ResponseEntity
+                .status(errCode.getStatus())
+                .body(e);
+    }
+
     @ExceptionHandler(StoreItemNotFoundException.class)
     public ResponseEntity<Map<String, String>> StoreItemNotFoundException(StoreItemNotFoundException e) {
         return ResponseEntity.status(404)

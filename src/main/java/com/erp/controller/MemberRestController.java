@@ -33,6 +33,18 @@ public class MemberRestController {
         memberService.setManager(requestBody);
         return ResponseEntity.ok().body(Map.of("message", "success"));
     }
+
+    @PutMapping(value = "/store", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> updateStore(
+            @RequestPart AddStoreRequestDTO request,
+            @RequestPart(value="storeImage", required = false) MultipartFile storeImage) {
+        ManagerDTO manager = ManagerDTO.toDTO(request.getManager());
+        StoreDTO store = StoreDTO.toDTO(request.getStore());
+
+        storeService.setStore(manager, store, storeImage);
+        return ResponseEntity.ok().body(Map.of("message", "직영점 변경 성공"));
+    }
+
     @GetMapping("/manager/{managerId}")
     public ResponseEntity<Map<String, Object>> getManager(@PathVariable String managerId) {
         ManagerDTO managerDTO = memberService.getManager(managerId);

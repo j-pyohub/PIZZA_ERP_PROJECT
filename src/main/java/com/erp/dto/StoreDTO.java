@@ -55,7 +55,7 @@ public class StoreDTO {
                 .closedDate(closedDate)
                 .openTime(data.get("openTime"))
                 .closeTime(data.get("closeTime"))
-                .storeImage(data.get("image"))
+                .storeImage(data.get("storeImage"))
                 .menuStopRole("N")
                 .build();
     }

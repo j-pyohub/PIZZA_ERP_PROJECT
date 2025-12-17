@@ -62,6 +62,33 @@ public class StoreService {
         return storeDAO.getStoreDetail(storeId);
     }
 
+    public void setStore(ManagerDTO manager, StoreDTO store, MultipartFile storeImage) {
+        if (storeImage != null && !storeImage.isEmpty()) {
+            String imageUrl = s3Uploader.uploadMenuImage(storeImage, store.getStoreName());
+            store.setStoreImage(imageUrl);
+        }
+
+        manager.setRole("ROLE_STORE");
+        manager.setPw(encoder.encode(manager.getPw()));
+        store.setStoreManagerId(manager.getManagerId());
+        store.setStoreNo(storeDAO.getStoreNoByManager(manager.getManagerId()));
+
+        System.out.println(manager);
+        System.out.println(store);
+        try{
+            managerDAO.setManager(manager);
+        }
+        catch(Exception e){
+            throw new ManagerException("직원 변경이 실패했습니다.");
+        }
+        try{
+            storeDAO.setStore(store);
+        }
+        catch(Exception e){
+            throw new StoreNotFoundException("직영점 변경이 실패했습니다.");
+        }
+    }
+
     @Transactional
     public void addStore(ManagerDTO manager, StoreDTO store, MultipartFile storeImage) {
         if (storeImage != null && !storeImage.isEmpty()) {

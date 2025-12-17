@@ -62,7 +62,7 @@
             <div class="row mb-3">
                 <label class="col-2 fw-bold">비밀번호</label>
                 <div class="col-5 d-flex">
-                    <input type="password" class="form-control me-1" value="" id="pw">
+                    <input type="password" class="form-control me-1" value="" id="pw" data-is_avail="false">
                     <input type="password" class="form-control" value="" id="pwEqual">
                 </div>
                 <div class="col-2">
@@ -120,7 +120,10 @@
                 <div class="col-2"><input type="time" class="form-control" value="" id="closeTime"></div>
 
                 <label class="col-2 fw-bold ms-5">직영점 이미지</label>
-                <div class="col-4"><input type="file" class="form-control" value=""></div>
+                <div class="col-4">
+                    <input type="file" class="form-control" id="storeImage">
+                    <span id="fileName" data-path="">선택된 파일 없음</span>
+                </div>
             </div>
         </div>
     </div>
@@ -149,10 +152,80 @@
         $("#openTime").val(data.store.openTime);
         $("#closeTime").val(data.store.closeTime);
         $("#storePhone").val(data.store.storePhoneNumber);
-
+        localStorage.setItem("storeImage", data.store.storeImage);
+        $("#fileName").text(data.store.storeImage.split("/").pop());
     }
 
+    function getStoreData(){
+        const storeId = $("#managerId").val();
+        const password = $("#pw").val();
+        const managerName = $("#managerName").val();
+        const managerEmail = $("#managerEmail").val();
+        const managerPhone = $("#managerPhone").val();
+        const storeAddress = $("#storeAddress").val();
+        const storeName = $("#storeName").val();
+        const status = $("#storeStatus").val();
+        const openDate = $("#openDate").val();
+        const openTime = $("#openTime").val();
+        const closeTime = $("#closeTime").val();
+        const storePhone = $("#storePhone").val();
+        const imagePath = localStorage.getItem("storeImage");
 
+        if(isEmpty(storeId) || isEmpty(password) || isEmpty(managerName) || isEmpty(managerEmail) || isEmpty(managerPhone)
+            || isEmpty(storeAddress)|| isEmpty(storeName)|| isEmpty(status)|| isEmpty(openDate)
+            || isEmpty(openTime)|| isEmpty(closeTime)|| isEmpty(storePhone)) {
+            showAlert("값을 전부 입력해주세요.", ()=>{}, "check");
+            return null;
+        }
+
+        const data = {
+            "manager": {
+                "managerId": storeId,
+                "password": password,
+                "email": managerEmail,
+                "name": managerName,
+                "phone": managerPhone
+            },
+            "store": {
+                "storeName": storeName,
+                "storeStatus" : status,
+                "address": storeAddress,
+                "longitude":"",
+                "latitude":"",
+                "storePhoneNumber" : storePhone,
+                "openedDate" : openDate,
+                "openTime" : openTime,
+                "closeTime" : closeTime,
+                "storeImage" : imagePath
+            }
+        };
+
+        const formData = new FormData();
+        formData.append(
+            "request",
+            new Blob([JSON.stringify(data)], {type: "application/json"})
+        );
+
+        const storeImage = $("#storeImage")[0].files[0];
+        if(storeImage){
+            formData.append("storeImage", storeImage);
+        }
+
+        return formData;
+    }
+
+    $(document).on("click", "#saveBtn", function(){
+        const jsonData = getStoreData();
+        if(jsonData == null) return;
+        checkPw();
+        if(!$("#pw").data("is_avail")) return;
+
+        fetchUtil("/admin/member/store", (data)=>{
+            if(data.message === "직영점 변경 성공"){
+                location.href = "/admin/memberListUI";
+            }
+        }, "PUT", jsonData);
+    });
 
     $(document).on("click", "#storeAddress", function(){
         goPopup();
@@ -162,8 +235,6 @@
     function jusoCallback(data) {
         addr = data;
         $("#storeAddress").val(data.roadFullAddr);
-
-
     }
 
     function goPopup() {
@@ -174,6 +245,15 @@
         );
     }
 
+
+    function checkPw(){
+        const pw = $("#pw");
+        if(pw.val() === $("#pwEqual").val()){
+            pw.data("is_avail", true);
+        }
+        else
+            pw.data("is_avail", false);
+    }
 
     $("#cancelBtn").click(() => {
         history.back()
