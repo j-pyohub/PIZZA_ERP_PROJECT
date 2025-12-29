@@ -83,7 +83,7 @@
 
   let dataAll = [];
   let dataFiltered = [];
-  let currentPage = 1;
+  currentPage = 1;          // ✅ 선언 ❌ / 재할당 ⭕
   const rowsPerPage = 10;
 
   function loadPage(page){
@@ -113,12 +113,17 @@
       `);
     });
 
-    updatePaginationUI(currentPage, Math.ceil(dataFiltered.length / rowsPerPage));
+    updatePaginationUI(
+            currentPage,
+            Math.ceil(dataFiltered.length / rowsPerPage)
+    );
   }
 
   function applySearch(){
     const keyword = $("#searchInput").val().trim();
-    dataFiltered = keyword ? dataAll.filter(x => x.menuName.includes(keyword)) : dataAll;
+    dataFiltered = keyword
+            ? dataAll.filter(x => x.menuName.includes(keyword))
+            : dataAll;
     currentPage = 1;
     renderTable();
   }
@@ -126,7 +131,7 @@
   $("#searchBtn").on("click", applySearch);
   $("#searchInput").on("keyup", e => e.key === "Enter" && applySearch());
 
-  $(document).ready(()=>{
+  $(document).ready(() => {
     fetchUtil(`/salesDetail?storeNo=${storeNo}&salesDate=${salesDate}`, data => {
       dataAll = data;
       dataFiltered = dataAll;
