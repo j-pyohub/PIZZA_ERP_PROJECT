@@ -11,6 +11,26 @@
     let selectedStoreNo = null;
     let selectedStoreName = '';
 
+    // ✅ 날짜 포맷: 서버가 Z / +00:00 로 내려줘도 브라우저 로컬(KST)로 맞춰 출력
+    function formatDatetime(value){
+        if (!value) return '';
+
+        // 이미 "YYYY-MM-DD HH:mm:ss" 형태면 그대로 사용
+        if (typeof value === 'string' && value.includes(' ') && value.length >= 19) {
+            return value.substring(0, 19);
+        }
+
+        const d = new Date(value); // ISO 문자열(Z/+00:00 포함)이면 자동으로 로컬 타임존 변환
+        if (isNaN(d.getTime())) {
+            // 파싱 실패 시 기존 방식 fallback
+            return String(value).replace('T', ' ').substring(0, 19);
+        }
+
+        const pad = (n) => String(n).padStart(2, '0');
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+            `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
     // 공통: 테이블 렌더
     function renderRows(list) {
         const $tb = $('#stockHistoryBody').empty();
@@ -19,7 +39,9 @@
             return;
         }
         list.forEach(r => {
-            const dt = (r.changeDatetime || '').toString().replace('T', ' ').substring(0, 19);
+            // ✅ 여기만 바뀜
+            const dt = formatDatetime(r.changeDatetime);
+
             const qty = Number(r.changeQuantity || 0);
             const sign = qty > 0 ? '+' : '';
             const unit = r.stockUnit || '';
