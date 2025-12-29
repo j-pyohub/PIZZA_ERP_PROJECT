@@ -87,9 +87,6 @@
 
 # Git 운영 원칙
 
-
-## Branch Strategy & Commit Convention
-
 ## 1. Branch 구조
 
 ### main
